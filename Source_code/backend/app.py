@@ -54,9 +54,17 @@ def create_app():
 # -----------------------------
 #  Run the Application
 # -----------------------------
-app = create_app()  # ✅ global Flask instance for Gunicorn
+# -----------------------------
+#  Run the Application
+# -----------------------------
+app = create_app()  # global Flask instance for Gunicorn
+
+# ✅ Ensure tables are created every time app starts
+with app.app_context():
+    from backend.models import db
+    db.create_all()
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
     app.run(host="0.0.0.0", port=5000, debug=True)
+
 
