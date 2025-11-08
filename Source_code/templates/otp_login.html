@@ -129,10 +129,11 @@
           document.getElementById("otp").disabled = false;
           loginMessage.textContent = data.message || '✅ OTP sent successfully! Check Render logs.';
         } 
-        else if (data.success && action === '/verify-otp') {
-          loginMessage.textContent = '✅ Verified successfully! Redirecting...';
-          window.location.href = '/customer/dashboard';
-        } 
+       else if (data.success && action === '/verify-otp') {
+       const redirect = data.redirect || '/customer/dashboard';
+       loginMessage.textContent = data.message || '✅ OTP verified successfully!';
+       setTimeout(() => window.location.href = redirect, 800);
+  } 
         else {
           loginMessage.textContent = data.message || data.error || '❌ Something went wrong. Please try again.';
         }

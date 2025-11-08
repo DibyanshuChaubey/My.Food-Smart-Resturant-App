@@ -117,37 +117,39 @@ def verify_otp():
     email = request.form.get('email')
     otp = request.form.get('otp')
 
-    # ✅ Validate OTP
-    if otp_store.get(email) == otp:
-        user = User.query.filter_by(email=email).first()
-        if user:
-            session['user_id'] = user.id
-            session['email'] = user.email
-            otp_store.pop(email, None)
+    user = User.query.filter_by(email=email).first()
+    valid = user and otp_store.get(email) == otp
 
-            # Smart redirect after OTP login
-            next_url = session.pop('post_login_next', None) or session.pop('redirectAfterLogin', None)
-            pending_data = (
-                session.pop('pendingOrder', None)
-                or session.pop('pendingBooking', None)
-                or session.pop('pendingEvent', None)
-            )
+    if valid:
+        # ✅ Save session
+        session['user_id'] = user.id
+        session['email'] = user.email
+        otp_store.pop(email, None)
 
-            flash(f"Welcome back, {user.name}! 🎉")
+        # ✅ Smart redirect handling
+        next_url = session.pop('post_login_next', None) or session.pop('redirectAfterLogin', None)
+        redirect_url = next_url or url_for('customer.customer_panel')
 
-            # Handle AJAX (fetch) or normal redirect
-            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({
-                    'success': True,
-                    'redirect': next_url or url_for('customer.customer_panel'),
-                    'pending_data': pending_data
-                })
+        flash(f"Welcome back, {user.name}! 🎉")
 
-            return redirect(next_url or url_for('customer.customer_panel'))
+        # ✅ Detect AJAX / fetch requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+            return jsonify({
+                'success': True,
+                'message': '✅ OTP verified successfully!',
+                'redirect': redirect_url
+            }), 200
+
+        # Normal browser form post fallback
+        return redirect(redirect_url)
 
     # ❌ Invalid OTP
-    flash("Invalid or expired OTP. Please try again.")
+    flash("❌ Invalid or expired OTP. Please try again.")
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+        return jsonify({'success': False, 'message': '❌ Invalid or expired OTP.'}), 400
+
     return redirect(url_for('auth.otp_login'))
+
 
 
 # ====================================================
