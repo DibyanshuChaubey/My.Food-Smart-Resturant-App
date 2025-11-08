@@ -9,7 +9,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), default='customer')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,7 +20,7 @@ class Order(db.Model):
     address = db.Column(db.String(200))
     special_requests = db.Column(db.Text)
     status = db.Column(db.String(20), default='Pending')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
 class PrivateRoom(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,7 +30,7 @@ class PrivateRoom(db.Model):
     date = db.Column(db.String(20))
     time = db.Column(db.String(20))
     message = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,4 +41,4 @@ class Event(db.Model):
     guests = db.Column(db.Integer)
     date = db.Column(db.String(20))
     message = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
