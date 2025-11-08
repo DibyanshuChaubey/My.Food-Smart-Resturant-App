@@ -72,40 +72,31 @@ def otp_login():
 # ====================================================
 @auth_bp.route('/send-otp', methods=['POST'])
 def send_otp():
+    email = request.form.get('email')
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return jsonify({'success': False, 'message': '❌ Email not registered. Please register first.'}), 400
+
+    otp = ''.join(random.choices(string.digits, k=6))
+    otp_store[email] = otp
+
+    msg = Message(
+        subject="🔐 Your Smart Restaurant OTP Code",
+        recipients=[email],
+        body=f"Hello {user.name},\n\nYour OTP code is {otp}. It’s valid for 5 minutes.\n\nEnjoy ordering with Smart Restaurant 🍽️!",
+        sender=("Smart Restaurant", os.getenv('MAIL_USERNAME'))
+    )
+
     try:
-        email = request.form.get('email')
-
-        if not email:
-            return jsonify({'success': False, 'message': '⚠️ Email is required.'}), 400
-
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            return jsonify({'success': False, 'message': '❌ Email not registered. Please register first.'}), 400
-
-        # ✅ Generate and store OTP
-        otp = ''.join(random.choices(string.digits, k=6))
-        otp_store[email] = otp
-
-        # ✅ Log OTP (since SMTP may not work on Render free tier)
-        print(f"✅ OTP for {email}: {otp}")
-
-        # 🔒 Try email sending only if SMTP is configured
-        try:
-            msg = Message(
-                subject="Your OTP Code - Restaurant App",
-                recipients=[email],
-                body=f"Your OTP code is {otp}.",
-                sender=("Restaurant App", "noreply@restaurant-app.com")
-            )
-            mail.send(msg)
-        except Exception as mail_err:
-            print(f"⚠️ Mail sending skipped: {mail_err}")
-
-        return jsonify({'success': True, 'message': '✅ OTP sent successfully! Check Render logs.'}), 200
-
+        mail.send(msg)
+        print(f"✅ Sent OTP {otp} to {email}")
+        return jsonify({'success': True, 'message': f'✅ OTP sent successfully to {email}'})
     except Exception as e:
-        print("❌ Error in /send-otp:", str(e))
-        return jsonify({'success': False, 'message': f'❌ Server error: {str(e)}'}), 500
+        print(f"⚠️ Mail sending failed: {e}")
+        return jsonify({'success': False, 'message': '⚠️ Could not send email. Please check server logs.'})
+
+
 
 
 
@@ -121,34 +112,40 @@ def verify_otp():
     valid = user and otp_store.get(email) == otp
 
     if valid:
-        # ✅ Save session
         session['user_id'] = user.id
         session['email'] = user.email
         otp_store.pop(email, None)
 
-        # ✅ Smart redirect handling
         next_url = session.pop('post_login_next', None) or session.pop('redirectAfterLogin', None)
         redirect_url = next_url or url_for('customer.customer_panel')
 
         flash(f"Welcome back, {user.name}! 🎉")
 
-        # ✅ Detect AJAX / fetch requests
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+        # 🧠 Detect all possible JSON/AJAX requests
+        if (
+            request.headers.get('X-Requested-With') == 'XMLHttpRequest' or
+            request.is_json or
+            request.accept_mimetypes.best == 'application/json'
+        ):
             return jsonify({
                 'success': True,
                 'message': '✅ OTP verified successfully!',
                 'redirect': redirect_url
             }), 200
 
-        # Normal browser form post fallback
         return redirect(redirect_url)
 
     # ❌ Invalid OTP
     flash("❌ Invalid or expired OTP. Please try again.")
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json:
+    if (
+        request.headers.get('X-Requested-With') == 'XMLHttpRequest' or
+        request.is_json or
+        request.accept_mimetypes.best == 'application/json'
+    ):
         return jsonify({'success': False, 'message': '❌ Invalid or expired OTP.'}), 400
 
     return redirect(url_for('auth.otp_login'))
+
 
 
 

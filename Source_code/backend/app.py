@@ -42,6 +42,10 @@ def inject_auth_state():
         "is_authenticated": bool(session.get("user_id")),
         "user_email": session.get("email")
     }
+import os
+print("🧩 DEBUG ENV TEST:")
+print("MAIL USER:", os.getenv("MAIL_USERNAME"))
+print("DB URL:", os.getenv("DATABASE_URL"))
 
 
 
