@@ -117,7 +117,12 @@
           sendOtpBtn.textContent = 'Sending...';
         }
 
-        const res = await fetch(action, { method: 'POST', body: formData });
+        const res = await fetch(action, {
+  method: 'POST',
+  body: formData,
+  headers: { 'X-Requested-With': 'XMLHttpRequest' }  // 🧠 Force Flask to detect AJAX
+});
+
         const data = await res.json();
 
         if (data.success && action === '/send-otp') {
