@@ -8,6 +8,7 @@ from auth import auth_bp, mail as auth_mail
 from customer import customer_bp
 from admin import admin_bp
 
+
 # -----------------------------
 #  Application Factory
 # -----------------------------
@@ -27,22 +28,35 @@ def create_app():
     app.register_blueprint(customer_bp)
     app.register_blueprint(admin_bp)
 
+    # ✅ Inject session variables (for login-based nav)
+    @app.context_processor
+    def inject_auth_state():
+        from flask import session
+        return {
+            "is_authenticated": bool(session.get("user_id")),
+            "user_email": session.get("email")
+        }
+
     # ✅ Create tables automatically (safe)
     with app.app_context():
         db.create_all()
 
-    # ✅ Define a simple route
+    # ✅ Define routes
     @app.route('/')
     def home():
         return render_template('index.html')
 
     return app
 
+
 # -----------------------------
 #  Global Flask App for Gunicorn
 # -----------------------------
 app = create_app()
 
+
+# -----------------------------
+#  Run Locally
 # -----------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
