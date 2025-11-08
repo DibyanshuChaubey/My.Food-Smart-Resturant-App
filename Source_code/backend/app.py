@@ -2,7 +2,7 @@
 from flask import Flask, render_template
 from flask_mail import Mail
 from flask_cors import CORS
-from config import Config
+from backend.config import Config
 from models import db
 from auth import auth_bp, mail as auth_mail
 from customer import customer_bp
