@@ -70,6 +70,9 @@ def otp_login():
 # ====================================================
 # 🔹 SEND OTP (Render-safe)
 # ====================================================
+
+
+
 @auth_bp.route('/send-otp', methods=['POST'])
 def send_otp():
     email = request.form.get('email')
@@ -81,20 +84,40 @@ def send_otp():
     otp = ''.join(random.choices(string.digits, k=6))
     otp_store[email] = otp
 
-    msg = Message(
-        subject="🔐 Your Smart Restaurant OTP Code",
-        recipients=[email],
-        body=f"Hello {user.name},\n\nYour OTP code is {otp}. It’s valid for 5 minutes.\n\nEnjoy ordering with Smart Restaurant 🍽️!",
-        sender=("Smart Restaurant", os.getenv('MAIL_USERNAME'))
-    )
+    # --- Brevo API send email ---
+    api_key = os.getenv("BREVO_API_KEY")
+    sender = os.getenv("MAIL_USERNAME")
+    sender_name = os.getenv("MAIL_SENDER_NAME", "Restaurant App")
+
+    data = {
+        "sender": {"name": sender_name, "email": sender},
+        "to": [{"email": email}],
+        "subject": "Your OTP Code",
+        "htmlContent": f"<h3>Your OTP code is <b>{otp}</b></h3><p>This code is valid for 5 minutes.</p>"
+    }
 
     try:
-        mail.send(msg)
-        print(f"✅ Sent OTP {otp} to {email}")
-        return jsonify({'success': True, 'message': f'✅ OTP sent successfully to {email}'})
+        res = request.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={
+            "accept": "application/json",
+            "content-type": "application/json",
+            "api-key": api_key
+        },
+        json=data
+        )
+
+        if res.status_code == 201:
+            print(f"✅ OTP email sent successfully to {email}")
+            return jsonify({'success': True, 'message': '✅ OTP sent successfully! Please check your email.'})
+        else:
+            print(f"⚠️ Brevo API error {res.status_code}: {res.text}")
+            return jsonify({'success': False, 'message': '⚠️ Failed to send OTP email. Check Render logs.'})
     except Exception as e:
-        print(f"⚠️ Mail sending failed: {e}")
-        return jsonify({'success': False, 'message': '⚠️ Could not send email. Please check server logs.'})
+        print(f"❌ Error sending OTP: {e}")
+        return jsonify({'success': False, 'message': f'❌ Network error: {e}'})
+
+
 
 
 
