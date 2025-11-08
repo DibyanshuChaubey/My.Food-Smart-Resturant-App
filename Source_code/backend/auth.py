@@ -79,10 +79,13 @@ def send_otp():
     )
 
     try:
-        mail.send(msg)
-        return jsonify({'success': True})
+    # mail.send(msg)  # ❌ Disabled SMTP for Render free tier
+        print(f"✅ OTP for {email}: {otp}")  # ✅ Log OTP instead
+        return jsonify({'success': True, 'otp': otp})  # Optional: include for debug
     except Exception as e:
+        print("❌ Email send failed:", e)
         return jsonify({'success': False, 'error': str(e)})
+
 
 
 # 🔹 Verify OTP (with redirect to saved page)
