@@ -9,97 +9,97 @@ import string
 auth_bp = Blueprint('auth', __name__)
 mail = Mail()
 
-# temporary memory storage (use Redis in production)
+# Temporary in-memory OTP store (for production, replace with Redis or DB)
 otp_store = {}
 
-# 🔹 Registration
+# ====================================================
+# 🔹 USER REGISTRATION
+# ====================================================
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
         password = generate_password_hash(request.form['password'])
-        existing = User.query.filter_by(email=email).first()
 
+        # Check for existing user
+        existing = User.query.filter_by(email=email).first()
         if existing:
             return render_template('register.html', error="Email already registered.")
 
+        # Create new user
         user = User(name=name, email=email, password=password)
         db.session.add(user)
         db.session.commit()
         flash("Registration successful! Please login.")
         return redirect(url_for('auth.otp_login'))
+
     return render_template('register.html')
 
 
-# 🔹 OTP Login (GET + POST combined cleanly)
-
+# ====================================================
+# 🔹 PASSWORD + OTP LOGIN
+# ====================================================
 @auth_bp.route('/otp_login', methods=['GET', 'POST'])
 def otp_login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form.get('password')
-
         user = User.query.filter_by(email=email).first()
+
+        # ✅ Password login
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['email'] = user.email
 
-            # 🆕 After normal login, redirect to saved next page if available
+            # Redirect user to pending page (if any)
             next_url = session.pop('post_login_next', None)
-            if next_url:
-                return redirect(next_url)
-            return redirect(url_for('customer.customer_panel'))
+            return redirect(next_url or url_for('customer.customer_panel'))
 
-        return render_template('otp_login.html', error="Invalid credentials.")
+        # ❌ Invalid credentials
+        return render_template('otp_login.html', error="Invalid credentials. Please try again.")
 
-    # 🆕 Handle ?next= param in GET
+    # 🧭 Handle ?next param for redirect after login
     next_url = request.args.get('next')
     if next_url:
-        session['post_login_next'] = next_url  # store for later use
+        session['post_login_next'] = next_url
 
     return render_template('otp_login.html')
 
 
-# # 🔹 Send OTP
-# @auth_bp.route('/send-otp', methods=['POST'])
-# def send_otp():
-#     email = request.form.get('email')
-#     user = User.query.filter_by(email=email).first()
-#     if not user:
-#         return jsonify({'success': False, 'error': 'Email not registered.'})
-
-#     otp = ''.join(random.choices(string.digits, k=6))
-#     otp_store[email] = otp
-
-#     msg = Message(
-#         subject="Your OTP Code",
-#         recipients=[email],
-#         body=f"Your OTP code is {otp}.",
-#         sender=("Restaurant App", "dibyanshuchaubey727@gmail.com")
-#     )
-
-#     try:
-#     # mail.send(msg)  # ❌ Disabled SMTP for Render free tier
-#         print(f"✅ OTP for {email}: {otp}")  # ✅ Log OTP instead
-#         return jsonify({'success': True, 'otp': otp})  # Optional: include for debug
-#     except Exception as e:
-#         print("❌ Email send failed:", e)
-#         return jsonify({'success': False, 'error': str(e)})
-
+# ====================================================
+# 🔹 SEND OTP (Render-safe)
+# ====================================================
 @auth_bp.route('/send-otp', methods=['POST'])
 def send_otp():
     email = request.form.get('email')
     user = User.query.filter_by(email=email).first()
 
     if not user:
-        return jsonify({'success': False, 'message': '❌ Email not registered. Please register first.'}), 400
+        return jsonify({
+            'success': False,
+            'message': '❌ Email not registered. Please register first.'
+        }), 400
 
+    # Generate and store OTP
     otp = ''.join(random.choices(string.digits, k=6))
     otp_store[email] = otp
 
-    # Render-safe: log OTP instead of sending via SMTP
+    # ✅ Log OTP for Render (no SMTP needed)
     print(f"✅ OTP for {email}: {otp}")
+
+    # Optional: send via Gmail if SMTP creds exist
+    try:
+        if mail:
+            msg = Message(
+                subject="Your OTP Code - Restaurant App",
+                recipients=[email],
+                body=f"Your OTP code is {otp}. It will expire soon.",
+                sender=("Restaurant App", "noreply@restaurant-app.com")
+            )
+            mail.send(msg)
+    except Exception as e:
+        print("⚠️ Email send skipped:", e)
 
     return jsonify({
         'success': True,
@@ -107,31 +107,33 @@ def send_otp():
     }), 200
 
 
-
-# 🔹 Verify OTP (with redirect to saved page)
+# ====================================================
+# 🔹 VERIFY OTP (with smart redirect)
+# ====================================================
 @auth_bp.route('/verify-otp', methods=['POST'])
 def verify_otp():
     email = request.form.get('email')
     otp = request.form.get('otp')
 
-    # ✅ Verify OTP
+    # ✅ Validate OTP
     if otp_store.get(email) == otp:
         user = User.query.filter_by(email=email).first()
         if user:
-            # Store session
             session['user_id'] = user.id
             session['email'] = user.email
             otp_store.pop(email, None)
 
-            # ✅ Retrieve pending redirect (if user was trying to book/order before login)
+            # Smart redirect after OTP login
             next_url = session.pop('post_login_next', None) or session.pop('redirectAfterLogin', None)
+            pending_data = (
+                session.pop('pendingOrder', None)
+                or session.pop('pendingBooking', None)
+                or session.pop('pendingEvent', None)
+            )
 
-            # ✅ If user filled any form data before login, preserve it
-            pending_data = session.pop('pendingOrder', None) or session.pop('pendingBooking', None)
+            flash(f"Welcome back, {user.name}! 🎉")
 
-            flash("Login successful! Welcome back, {}.".format(user.name))
-
-            # ✅ Return correct redirect — JSON for frontend fetch or normal redirect
+            # Handle AJAX (fetch) or normal redirect
             if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return jsonify({
                     'success': True,
@@ -146,12 +148,11 @@ def verify_otp():
     return redirect(url_for('auth.otp_login'))
 
 
-
-# 🔹 Logout
-# 🔹 Logout
+# ====================================================
+# 🔹 LOGOUT
+# ====================================================
 @auth_bp.route('/logout')
 def logout():
     session.clear()
-    flash("You have been logged out.")
-    return redirect(url_for('home'))  # ✅ Redirects to index.html
-
+    flash("You have been logged out successfully.")
+    return redirect(url_for('home'))  # Redirect to index.html
