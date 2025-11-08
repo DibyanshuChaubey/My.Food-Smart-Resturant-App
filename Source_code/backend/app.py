@@ -27,6 +27,14 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(customer_bp)
     app.register_blueprint(admin_bp)
+    # ✅ Create tables only if they don't exist
+    with app.app_context():
+        from sqlalchemy import inspect
+        inspector = inspect(db.engine)
+        if not inspector.get_table_names():  # Only run if no tables
+            print("🔧 Creating database tables for the first time...")
+            db.create_all()
+
 
     # ✅ Inject session variables (for login-based nav)
     @app.context_processor
