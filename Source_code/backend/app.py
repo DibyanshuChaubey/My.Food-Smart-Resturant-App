@@ -15,56 +15,36 @@ def create_app():
     app = Flask(__name__, template_folder='../templates')
     app.config.from_object(Config)
 
-    # Enable CORS
+    # Enable CORS (optional)
     CORS(app)
 
-    # Initialize extensions
+    # ✅ Initialize extensions
     db.init_app(app)
     auth_mail.init_app(app)
 
-    # Register Blueprints
+    # ✅ Register Blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(customer_bp)
     app.register_blueprint(admin_bp)
 
-    # Home route
+    # ✅ Create tables automatically (safe)
+    with app.app_context():
+        db.create_all()
+
+    # ✅ Define a simple route
     @app.route('/')
     def home():
         return render_template('index.html')
 
-    # 404 handler
-    @app.errorhandler(404)
-    def not_found(e):
-        return render_template('404.html'), 404
-
-    # Inject session data globally (used for navbar login status)
-    @app.context_processor
-    def inject_auth_state():
-        from flask import session
-        return {
-            "is_authenticated": bool(session.get("user_id")),
-            "user_email": session.get("email")
-        }
-
     return app
 
+# -----------------------------
+#  Global Flask App for Gunicorn
+# -----------------------------
+app = create_app()
 
 # -----------------------------
-#  Run the Application
+#  Run Locally (Only if executed directly)
 # -----------------------------
-#  Run the Application
-# -----------------------------
-# -----------------------------
-#  Run the Application
-# -----------------------------
-app = create_app()  # global Flask instance for Gunicorn
-
-# ✅ Ensure tables are created every time app starts
-with app.app_context():
-    from backend.models import db
-    db.create_all()
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
-
