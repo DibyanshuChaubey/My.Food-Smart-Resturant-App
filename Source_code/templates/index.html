@@ -59,6 +59,14 @@
 </div>
 <a class="px-3 py-1 rounded-lg hover:bg-amber-100 text-gray-800 hover:text-amber-600 font-medium transition" href="#contact">Contact</a>
 </nav>
+<!-- TEMP DEBUG -->
+<p style="color:red; font-size:12px; text-align:center;">
+  {% if is_authenticated %}
+    ✅ Logged in as {{ user_email }}
+  {% else %}
+    ⚠️ Not logged in
+  {% endif %}
+</p>
 
 <div class="flex items-center space-x-3">
   {% if is_authenticated %}

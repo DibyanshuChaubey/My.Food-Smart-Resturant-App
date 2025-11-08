@@ -72,39 +72,41 @@ def otp_login():
 # ====================================================
 @auth_bp.route('/send-otp', methods=['POST'])
 def send_otp():
-    email = request.form.get('email')
-    user = User.query.filter_by(email=email).first()
-
-    if not user:
-        return jsonify({
-            'success': False,
-            'message': '❌ Email not registered. Please register first.'
-        }), 400
-
-    # Generate and store OTP
-    otp = ''.join(random.choices(string.digits, k=6))
-    otp_store[email] = otp
-
-    # ✅ Log OTP for Render (no SMTP needed)
-    print(f"✅ OTP for {email}: {otp}")
-
-    # Optional: send via Gmail if SMTP creds exist
     try:
-        if mail:
+        email = request.form.get('email')
+
+        if not email:
+            return jsonify({'success': False, 'message': '⚠️ Email is required.'}), 400
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return jsonify({'success': False, 'message': '❌ Email not registered. Please register first.'}), 400
+
+        # ✅ Generate and store OTP
+        otp = ''.join(random.choices(string.digits, k=6))
+        otp_store[email] = otp
+
+        # ✅ Log OTP (since SMTP may not work on Render free tier)
+        print(f"✅ OTP for {email}: {otp}")
+
+        # 🔒 Try email sending only if SMTP is configured
+        try:
             msg = Message(
                 subject="Your OTP Code - Restaurant App",
                 recipients=[email],
-                body=f"Your OTP code is {otp}. It will expire soon.",
+                body=f"Your OTP code is {otp}.",
                 sender=("Restaurant App", "noreply@restaurant-app.com")
             )
             mail.send(msg)
-    except Exception as e:
-        print("⚠️ Email send skipped:", e)
+        except Exception as mail_err:
+            print(f"⚠️ Mail sending skipped: {mail_err}")
 
-    return jsonify({
-        'success': True,
-        'message': f"✅ OTP generated successfully for {email}. (Check Render Logs)"
-    }), 200
+        return jsonify({'success': True, 'message': '✅ OTP sent successfully! Check Render logs.'}), 200
+
+    except Exception as e:
+        print("❌ Error in /send-otp:", str(e))
+        return jsonify({'success': False, 'message': f'❌ Server error: {str(e)}'}), 500
+
 
 
 # ====================================================
