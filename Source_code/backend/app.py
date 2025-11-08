@@ -38,8 +38,8 @@ def create_app():
         }
 
     # ✅ Create tables automatically (safe)
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
 
     # ✅ Define routes
     @app.route('/')
