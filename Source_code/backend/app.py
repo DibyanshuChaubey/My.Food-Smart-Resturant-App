@@ -46,8 +46,10 @@ def create_app():
         }
 
     # ✅ Create tables automatically (safe)
-    # with app.app_context():
-    #     db.create_all()
+    with app.app_context():
+        db.create_all()
+        print("✅ PostgreSQL tables created (if not exist).")
+
 
     # ✅ Define routes
     @app.route('/')
