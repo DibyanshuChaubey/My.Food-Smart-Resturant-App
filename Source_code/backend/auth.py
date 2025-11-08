@@ -33,6 +33,7 @@ def register():
 
 
 # 🔹 OTP Login (GET + POST combined cleanly)
+
 @auth_bp.route('/otp_login', methods=['GET', 'POST'])
 def otp_login():
     if request.method == 'POST':
@@ -60,31 +61,50 @@ def otp_login():
     return render_template('otp_login.html')
 
 
-# 🔹 Send OTP
+# # 🔹 Send OTP
+# @auth_bp.route('/send-otp', methods=['POST'])
+# def send_otp():
+#     email = request.form.get('email')
+#     user = User.query.filter_by(email=email).first()
+#     if not user:
+#         return jsonify({'success': False, 'error': 'Email not registered.'})
+
+#     otp = ''.join(random.choices(string.digits, k=6))
+#     otp_store[email] = otp
+
+#     msg = Message(
+#         subject="Your OTP Code",
+#         recipients=[email],
+#         body=f"Your OTP code is {otp}.",
+#         sender=("Restaurant App", "dibyanshuchaubey727@gmail.com")
+#     )
+
+#     try:
+#     # mail.send(msg)  # ❌ Disabled SMTP for Render free tier
+#         print(f"✅ OTP for {email}: {otp}")  # ✅ Log OTP instead
+#         return jsonify({'success': True, 'otp': otp})  # Optional: include for debug
+#     except Exception as e:
+#         print("❌ Email send failed:", e)
+#         return jsonify({'success': False, 'error': str(e)})
+
 @auth_bp.route('/send-otp', methods=['POST'])
 def send_otp():
     email = request.form.get('email')
     user = User.query.filter_by(email=email).first()
+
     if not user:
-        return jsonify({'success': False, 'error': 'Email not registered.'})
+        return jsonify({'success': False, 'message': '❌ Email not registered. Please register first.'}), 400
 
     otp = ''.join(random.choices(string.digits, k=6))
     otp_store[email] = otp
 
-    msg = Message(
-        subject="Your OTP Code",
-        recipients=[email],
-        body=f"Your OTP code is {otp}.",
-        sender=("Restaurant App", "dibyanshuchaubey727@gmail.com")
-    )
+    # Render-safe: log OTP instead of sending via SMTP
+    print(f"✅ OTP for {email}: {otp}")
 
-    try:
-    # mail.send(msg)  # ❌ Disabled SMTP for Render free tier
-        print(f"✅ OTP for {email}: {otp}")  # ✅ Log OTP instead
-        return jsonify({'success': True, 'otp': otp})  # Optional: include for debug
-    except Exception as e:
-        print("❌ Email send failed:", e)
-        return jsonify({'success': False, 'error': str(e)})
+    return jsonify({
+        'success': True,
+        'message': f"✅ OTP generated successfully for {email}. (Check Render Logs)"
+    }), 200
 
 
 

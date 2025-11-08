@@ -6,15 +6,16 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-yellow-100 min-h-screen flex items-center justify-center">
-  <div class="bg-white p-6 rounded shadow-md w-full max-w-md animate-fade-in">
+
+  <div class="bg-white p-6 rounded-2xl shadow-md w-full max-w-md animate-fade-in">
     <h2 class="text-2xl font-bold mb-6 text-center text-amber-700">🔐 Customer Login</h2>
 
     <!-- Tabs -->
     <div class="flex justify-center mb-4">
-      <button id="tabPassword" class="tab-btn active bg-amber-200 text-amber-800 px-4 py-2 rounded-l border border-amber-400 font-medium">
+      <button id="tabPassword" class="tab-btn active bg-amber-200 text-amber-800 px-4 py-2 rounded-l border border-amber-400 font-medium transition">
         Password Login
       </button>
-      <button id="tabOtp" class="tab-btn bg-white text-amber-800 px-4 py-2 rounded-r border border-amber-400 font-medium">
+      <button id="tabOtp" class="tab-btn bg-white text-amber-800 px-4 py-2 rounded-r border border-amber-400 font-medium transition">
         OTP Login
       </button>
     </div>
@@ -22,44 +23,59 @@
     <!-- Password Login Form -->
     <form id="passwordForm" method="POST" action="/otp_login" class="tab-content">
       <label class="block font-medium mb-1">Email</label>
-      <input type="email" name="email" required class="w-full border px-4 py-2 rounded mb-4" />
+      <input type="email" name="email" required class="w-full border px-4 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+      
       <label class="block font-medium mb-1">Password</label>
-      <input type="password" name="password" required class="w-full border px-4 py-2 rounded mb-4" />
-      <button type="submit" class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">Login</button>
+      <input type="password" name="password" required class="w-full border px-4 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+      
+      <button type="submit" class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition active:scale-[0.98]">
+        Login
+      </button>
     </form>
 
     <!-- OTP Login Form -->
     <form id="otpForm" method="POST" action="/send-otp" class="tab-content hidden">
       <div id="emailStep">
         <label class="block font-medium mb-1">Email</label>
-        <input type="email" name="email" id="otpEmail" required class="w-full px-4 py-2 border rounded mb-4" />
-        <button type="submit" class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition">Send OTP</button>
+        <input type="email" name="email" id="otpEmail" required class="w-full px-4 py-2 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+        <button id="sendOtpBtn" type="submit" class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition active:scale-[0.98]">
+          Send OTP
+        </button>
       </div>
 
       <div id="otpStep" class="hidden">
         <input type="hidden" name="email" id="hiddenEmail">
         <label class="block font-medium mb-1">Enter OTP</label>
-        <input type="text" name="otp" id="otp" maxlength="6" required disabled class="w-full px-4 py-2 border rounded mb-4">
-        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">Verify OTP</button>
-        <button type="button" id="resendOtpBtn" class="w-full bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300 transition text-sm">
+        <input type="text" name="otp" id="otp" maxlength="6" required disabled 
+          class="w-full px-4 py-2 border rounded mb-4 text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-green-400">
+        
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition active:scale-[0.98]">
+          Verify OTP
+        </button>
+
+        <button type="button" id="resendOtpBtn" 
+          class="w-full mt-2 bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300 transition text-sm">
           🔄 Resend OTP
         </button>
       </div>
     </form>
 
     <p class="mt-4 text-sm text-gray-600 text-center">
-      Don't have an account? <a href="/register" class="text-amber-600 font-medium hover:underline">Register</a>
+      Don’t have an account?
+      <a href="/register" class="text-amber-600 font-medium hover:underline">Register</a>
     </p>
 
-    <p id="loginMessage" class="mt-4 text-center text-sm text-red-600">{{ error }}</p>
+    <p id="loginMessage" class="mt-4 text-center text-sm text-red-600 font-medium">{{ error }}</p>
   </div>
 
+  <!-- Animations & Styles -->
   <style>
     .animate-fade-in { animation: fadeIn 0.6s ease-in-out both; }
     @keyframes fadeIn { from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);} }
     .tab-btn.active { background-color: #fcd34d; color: #78350f; font-weight: bold; }
   </style>
 
+  <!-- JavaScript Logic -->
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     const tabPassword = document.getElementById("tabPassword");
@@ -70,8 +86,9 @@
     const otpStep = document.getElementById("otpStep");
     const loginMessage = document.getElementById("loginMessage");
     const hiddenEmail = document.getElementById("hiddenEmail");
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
 
-    // Toggle tabs
+    // 🔁 Tab switching
     tabPassword.addEventListener("click", () => {
       passwordForm.classList.remove("hidden");
       otpForm.classList.add("hidden");
@@ -88,15 +105,19 @@
       loginMessage.textContent = '';
     });
 
-    // OTP form handler (two-step)
+    // 🔐 OTP Flow (Send & Verify)
     otpForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData(otpForm);
       const action = otpForm.getAttribute("action");
 
       try {
+        if (action === '/send-otp') {
+          sendOtpBtn.disabled = true;
+          sendOtpBtn.textContent = 'Sending...';
+        }
+
         const res = await fetch(action, { method: 'POST', body: formData });
-        // /send-otp and /verify-otp both return JSON
         const data = await res.json();
 
         if (data.success && action === '/send-otp') {
@@ -106,19 +127,25 @@
           otpStep.classList.remove('hidden');
           otpForm.setAttribute('action', '/verify-otp');
           document.getElementById("otp").disabled = false;
-          loginMessage.textContent = '';
-        } else if (data.success && action === '/verify-otp') {
-          // fixed redirect:
+          loginMessage.textContent = data.message || '✅ OTP sent successfully! Check Render logs.';
+        } 
+        else if (data.success && action === '/verify-otp') {
+          loginMessage.textContent = '✅ Verified successfully! Redirecting...';
           window.location.href = '/customer/dashboard';
-        } else {
-          loginMessage.textContent = data.error || '❌ Something went wrong.';
+        } 
+        else {
+          loginMessage.textContent = data.message || data.error || '❌ Something went wrong. Please try again.';
         }
-      } catch (error) {
-        loginMessage.textContent = '❌ Server error. Try again.';
+      } catch (err) {
+        console.error(err);
+        loginMessage.textContent = '❌ Network error. Please try again.';
+      } finally {
+        sendOtpBtn.disabled = false;
+        sendOtpBtn.textContent = 'Send OTP';
       }
     });
 
-    // Resend OTP
+    // 🔁 Resend OTP
     const resendOtpBtn = document.getElementById("resendOtpBtn");
     resendOtpBtn.addEventListener("click", async () => {
       const email = hiddenEmail.value;
@@ -126,6 +153,7 @@
         loginMessage.textContent = '⚠️ Email not found. Please refresh.';
         return;
       }
+
       resendOtpBtn.disabled = true;
       resendOtpBtn.textContent = 'Resending...';
 
@@ -133,52 +161,32 @@
         method: "POST",
         body: new URLSearchParams({ email }),
       });
-      const data = await res.json();
 
-      if (data.success) loginMessage.textContent = '✅ OTP resent to your email.';
-      else loginMessage.textContent = data.error || '❌ Failed to resend.';
+      const data = await res.json();
+      loginMessage.textContent = data.message || data.error || '⚠️ Try again.';
 
       resendOtpBtn.textContent = '🔄 Resend OTP';
       setTimeout(() => { resendOtpBtn.disabled = false; }, 30000);
     });
+
+    // 🧭 Redirect Handling
+    const pendingOrder = sessionStorage.getItem('pendingOrder');
+    const pendingPrivateRoom = sessionStorage.getItem('pendingPrivateRoom');
+    const pendingEvent = sessionStorage.getItem('pendingEvent');
+
+    if (pendingOrder || pendingPrivateRoom || pendingEvent) {
+      sessionStorage.removeItem('pendingOrder');
+      sessionStorage.removeItem('pendingPrivateRoom');
+      sessionStorage.removeItem('pendingEvent');
+      window.location.href = '/';
+    }
+
+    const redirect = sessionStorage.getItem("redirectAfterLogin");
+    if (redirect) {
+      sessionStorage.removeItem("redirectAfterLogin");
+      window.location.href = redirect;
+    }
   });
-
-document.addEventListener('DOMContentLoaded', () => {
-  const pendingOrder = sessionStorage.getItem('pendingOrder');
-  const pendingPrivateRoom = sessionStorage.getItem('pendingPrivateRoom');
-  const pendingEvent = sessionStorage.getItem('pendingEvent');
-
-  if (pendingOrder || pendingPrivateRoom || pendingEvent) {
-    // clear pending
-    sessionStorage.removeItem('pendingOrder');
-    sessionStorage.removeItem('pendingPrivateRoom');
-    sessionStorage.removeItem('pendingEvent');
-
-    // redirect back to homepage
-    window.location.href = '/';
-  }
-});
-
-
-window.addEventListener("load", () => {
-  const redirect = sessionStorage.getItem("redirectAfterLogin");
-  if (redirect) {
-    sessionStorage.removeItem("redirectAfterLogin");
-    window.location.href = redirect;
-  }
-});
-
-</script>
-
-<script>
-window.addEventListener("load", () => {
-  const next = sessionStorage.getItem("redirectAfterLogin");
-  if (next) {
-    // go back to the original page/section where user started
-    window.location.href = next;
-  }
-});
-</script>
-
+  </script>
 </body>
 </html>
