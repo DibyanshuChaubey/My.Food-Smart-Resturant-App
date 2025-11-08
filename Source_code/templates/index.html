@@ -35,87 +35,146 @@
         .gallery-image:hover {
             transform: scale(1.05);
         }
+    
+        .group:hover .group-hover\:opacity-100 {
+        opacity: 1 !important;
+        }
+        .group:hover .group-hover\:visible {
+          visibility: visible !important;
+        }
+
+
     </style>
 </head>
+
 <body class="font-sans bg-gray-50">
-<!-- Header/Navigation -->
+<!-- ========================= 🌟 HEADER / NAVBAR ========================= -->
 <header class="fixed w-full bg-white shadow-md z-50">
-<div class="container mx-auto px-4 py-3 flex justify-between items-center">
-<div class="flex items-center">
-<img alt="Hawa Mahal restaurant logo with minimalist fork and knife icon" class="h-12 w-12 mr-2" src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7077cb17-eb3e-45c3-beca-2510e2fca5fe.png"/>
-<h1 class="text-2xl font-bold text-gray-800">Restaurant</h1>
-</div>
-<nav class="hidden md:flex space-x-6">
-<a class="px-3 py-1 rounded-lg hover:bg-amber-100 text-gray-800 hover:text-amber-600 font-medium transition" href="#home">Home</a>
-<a class="px-3 py-1 rounded-lg hover:bg-amber-100 text-gray-800 hover:text-amber-600 font-medium transition" href="#menu">Menu</a>
-<div class="relative group">
-<button class="px-3 py-1 rounded-lg hover:bg-amber-100 text-gray-800 hover:text-amber-600 font-medium transition">
-<span>Bookings <i class="fas fa-chevron-down text-xs"></i></span>
-</button>
-<div class="absolute hidden group-hover:block bg-white shadow-lg rounded-lg mt-1 p-2 min-w-[200px]">
-<a class="block px-4 py-2 hover:bg-amber-50 rounded" href="#private-rooms">Private Rooms</a>
-<a class="block px-4 py-2 hover:bg-amber-50 rounded" href="#event-reservation">Events</a>
-</div>
-</div>
-<a class="px-3 py-1 rounded-lg hover:bg-amber-100 text-gray-800 hover:text-amber-600 font-medium transition" href="#contact">Contact</a>
-</nav>
-<!-- TEMP DEBUG -->
-<p style="color:red; font-size:12px; text-align:center;">
-  {% if is_authenticated %}
-    ✅ Logged in as {{ user_email }}
-  {% else %}
-    ⚠️ Not logged in
-  {% endif %}
-</p>
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center">
 
-<div class="flex items-center space-x-3">
-  {% if is_authenticated %}
-    <!-- Logged-in state -->
-    <span class="hidden md:inline text-sm text-gray-600">
-      {{ user_email }}
-    </span>
+    <!-- 🍽️ Logo -->
+    <div class="flex items-center">
+      <img alt="Restaurant logo" class="h-12 w-12 mr-2" 
+           src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7077cb17-eb3e-45c3-beca-2510e2fca5fe.png"/>
+      <h1 class="text-2xl font-bold text-gray-800">Restaurant</h1>
+    </div>
 
-    <a href="/customer/dashboard"
-       class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition duration-300">
-       My Dashboard
-    </a>
+    <!-- 🧭 Navigation Links (Desktop) -->
+    <nav class="hidden md:flex space-x-6">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#menu" class="nav-link">Menu</a>
 
-    <a href="/logout"
-       class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition duration-300">
-       Logout
-    </a>
-  {% else %}
-    <!-- Logged-out state -->
-    <a href="/otp_login"
-       class="bg-amber-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-amber-700 transition duration-300">
-       Login
-    </a>
+      <div class="relative group">
+        <button class="nav-link flex items-center gap-1">
+          Bookings
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div class="absolute hidden group-hover:block bg-white shadow-lg rounded-lg mt-1 p-2 min-w-[200px]">
+          <a href="#private-rooms" class="dropdown-item">Private Rooms</a>
+          <a href="#event-reservation" class="dropdown-item">Events</a>
+        </div>
+      </div>
 
-    <a href="/register"
-       class="border border-amber-600 text-amber-700 px-4 py-2 rounded-lg font-medium hover:bg-amber-50 transition duration-300">
-       Register
-    </a>
-  {% endif %}
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
 
-  <!-- Keep your existing primary CTA -->
-  <button id="confirmOrderBtn"
-     class="bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-700 transition duration-300">
-     Order Now
-  </button>
+    <!-- 👤 User Actions -->
+    <div class="flex items-center space-x-3">
 
-  <!-- Mobile menu icon (unchanged) -->
-  <button class="md:hidden text-gray-800">
-    <i class="fas fa-bars text-2xl"></i>
-  </button>
-</div>
+      {% if is_authenticated %}
+      <!-- ✅ Logged-in user dropdown -->
+      <div class="relative group inline-block">
+        <button class="bg-amber-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-amber-700 transition flex items-center gap-2">
+          <!-- Avatar -->
+          <div class="w-7 h-7 rounded-full bg-white text-amber-700 flex items-center justify-center font-bold text-sm uppercase">
+            {{ user_email[0] }}
+          </div>
+          <!-- Name -->
+          <span class="text-sm truncate max-w-[140px]">{{ user_email.split('@')[0] | capitalize }}</span>
+          <!-- Chevron -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
+        <!-- Dropdown -->
+        <div class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-opacity">
+          <a href="/customer/dashboard" class="dropdown-item">My Dashboard</a>
+          <a href="/customer/orders" class="dropdown-item">My Orders</a>
+          <a href="/logout" class="dropdown-item text-red-600 hover:bg-red-100">Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <!-- 🔓 Guest Actions -->
+      <div class="flex gap-3">
+        <a href="/otp_login" class="btn-primary">Login</a>
+        <a href="/register" class="btn-outline">Register</a>
+      </div>
+      {% endif %}
 
+      <!-- 🛒 Primary CTA -->
+      <button id="confirmOrderBtn"
+        class="bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-700 transition duration-300">
+        Order Now
+      </button>
 
-</div>
+      <!-- 📱 Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="md:hidden text-gray-800">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+  </div>
 
-
-
+  <!-- 📱 Mobile Dropdown -->
+  <div id="mobileMenu" class="hidden md:hidden border-t border-gray-200 bg-white shadow-sm">
+    <div class="flex flex-col p-4 space-y-3 text-gray-700 font-medium">
+      <a href="#home" class="hover:text-amber-600">Home</a>
+      <a href="#menu" class="hover:text-amber-600">Menu</a>
+      <a href="#private-rooms" class="hover:text-amber-600">Private Rooms</a>
+      <a href="#event-reservation" class="hover:text-amber-600">Events</a>
+      <a href="#contact" class="hover:text-amber-600">Contact</a>
+      {% if is_authenticated %}
+      <a href="/customer/dashboard" class="hover:text-amber-600">My Dashboard</a>
+      <a href="/customer/orders" class="hover:text-amber-600">My Orders</a>
+      <a href="/logout" class="text-red-600 hover:text-red-700">Logout</a>
+      {% else %}
+      <a href="/otp_login" class="hover:text-amber-600">Login</a>
+      <a href="/register" class="hover:text-amber-600">Register</a>
+      {% endif %}
+    </div>
+  </div>
 </header>
+
+<!-- ========================= 🌟 END HEADER ========================= -->
+
+<!-- 💅 Style Enhancements -->
+<style>
+.nav-link {
+  @apply px-3 py-1 rounded-lg hover:bg-amber-100 text-gray-800 hover:text-amber-600 font-medium transition;
+}
+.dropdown-item {
+  @apply block px-4 py-2 hover:bg-amber-50 rounded text-gray-700;
+}
+.btn-primary {
+  @apply bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition;
+}
+.btn-outline {
+  @apply border border-amber-600 text-amber-700 px-4 py-2 rounded-lg hover:bg-amber-100 transition;
+}
+.group:hover .group-hover\:opacity-100 { opacity: 1 !important; }
+.group:hover .group-hover\:visible { visibility: visible !important; }
+</style>
+
+<!-- 📱 Mobile Menu Toggle Script -->
+<script>
+document.getElementById("mobileMenuBtn").addEventListener("click", () => {
+  const menu = document.getElementById("mobileMenu");
+  menu.classList.toggle("hidden");
+});
+</script>
+
 <!-- Hero Section --->
 <section class="hero text-white pt-32 pb-20 md:pt-40 md:pb-28" id="home">
 <div class="container mx-auto px-4 text-center">
