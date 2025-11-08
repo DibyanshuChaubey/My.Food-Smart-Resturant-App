@@ -91,21 +91,37 @@ def verify_otp():
     email = request.form.get('email')
     otp = request.form.get('otp')
 
+    # ✅ Verify OTP
     if otp_store.get(email) == otp:
         user = User.query.filter_by(email=email).first()
         if user:
+            # Store session
             session['user_id'] = user.id
             session['email'] = user.email
             otp_store.pop(email, None)
 
-            # 🆕 smart redirect after OTP login
-            next_url = session.pop('post_login_next', None)
-            if next_url:
-                return redirect(next_url)
-            return redirect(url_for('customer.customer_panel'))
+            # ✅ Retrieve pending redirect (if user was trying to book/order before login)
+            next_url = session.pop('post_login_next', None) or session.pop('redirectAfterLogin', None)
 
+            # ✅ If user filled any form data before login, preserve it
+            pending_data = session.pop('pendingOrder', None) or session.pop('pendingBooking', None)
+
+            flash("Login successful! Welcome back, {}.".format(user.name))
+
+            # ✅ Return correct redirect — JSON for frontend fetch or normal redirect
+            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({
+                    'success': True,
+                    'redirect': next_url or url_for('customer.customer_panel'),
+                    'pending_data': pending_data
+                })
+
+            return redirect(next_url or url_for('customer.customer_panel'))
+
+    # ❌ Invalid OTP
     flash("Invalid or expired OTP. Please try again.")
     return redirect(url_for('auth.otp_login'))
+
 
 
 # 🔹 Logout
