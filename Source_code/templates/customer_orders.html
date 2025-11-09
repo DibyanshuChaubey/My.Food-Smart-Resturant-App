@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Orders | Soviare Restaurant</title>
+
+  <!-- 🌈 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- 💎 FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- 🧡 Favicon -->
+  <link rel="icon" href="/favicon.ico" />
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      font-family: "Inter", sans-serif;
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-primary {
+      @apply bg-amber-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-amber-700 transition;
+    }
+
+    .btn-outline {
+      @apply border border-amber-600 text-amber-700 px-5 py-2 rounded-lg hover:bg-amber-100 transition;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gray-50">
+
+  <!-- ========================= 🌟 HEADER / NAVBAR ========================= -->
+  <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+    <div class="container mx-auto flex justify-between items-center px-6 py-3">
+      <div class="flex items-center space-x-2">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7077cb17-eb3e-45c3-beca-2510e2fca5fe.png" alt="logo" class="w-10 h-10 rounded-full">
+        <h1 class="text-xl font-bold text-gray-800">Soviare</h1>
+      </div>
+
+      <nav class="hidden md:flex space-x-6 font-medium text-gray-700">
+        <a href="/" class="hover:text-amber-600">Home</a>
+        <a href="#menu" class="hover:text-amber-600">Menu</a>
+        <a href="#bookings" class="hover:text-amber-600">Bookings</a>
+        <a href="#contact" class="hover:text-amber-600">Contact</a>
+      </nav>
+
+      <div class="flex items-center space-x-4">
+        <a href="/otp_login" class="btn-outline">Login</a>
+        <a href="/" class="btn-primary">Order Now</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================= 🌟 MAIN CONTENT ========================= -->
+  <main class="pt-24 pb-16 px-4 md:px-8">
+
+    <!-- 🌟 My Orders Section -->
+    <section class="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl border border-gray-100 p-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+        <i class="fa-solid fa-receipt text-amber-600 text-2xl"></i>
+        My Orders
+      </h1>
+
+      <!-- ✅ Example Orders -->
+      <div class="space-y-6">
+        <div class="order-card border border-gray-200 rounded-xl p-5 bg-white transition-all duration-200">
+          <div class="flex justify-between flex-wrap items-center">
+            <div>
+              <p class="font-semibold text-gray-800 text-lg">Order #1012</p>
+              <p class="text-sm text-gray-500 mt-1">Placed on 08 November 2025, 09:30 PM</p>
+            </div>
+            <span class="px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700">Delivered</span>
+          </div>
+
+          <div class="mt-4 border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
+            <p><strong>Total Items:</strong> 3</p>
+            <p><strong>Total Amount:</strong> ₹740</p>
+            <p><strong>Payment Method:</strong> UPI</p>
+            <p><strong>Delivery Address:</strong> Civil Lines, Kanpur</p>
+          </div>
+
+          <div class="mt-4 text-right">
+            <button class="btn-primary"><i class="fa-solid fa-eye mr-1"></i> View Details</button>
+          </div>
+        </div>
+
+        <div class="order-card border border-gray-200 rounded-xl p-5 bg-white transition-all duration-200">
+          <div class="flex justify-between flex-wrap items-center">
+            <div>
+              <p class="font-semibold text-gray-800 text-lg">Order #1013</p>
+              <p class="text-sm text-gray-500 mt-1">Placed on 09 November 2025, 06:10 PM</p>
+            </div>
+            <span class="px-4 py-1.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700">Pending</span>
+          </div>
+
+          <div class="mt-4 border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
+            <p><strong>Total Items:</strong> 2</p>
+            <p><strong>Total Amount:</strong> ₹460</p>
+            <p><strong>Payment Method:</strong> Cash on Delivery</p>
+            <p><strong>Delivery Address:</strong> Kidwai Nagar, Kanpur</p>
+          </div>
+
+          <div class="mt-4 text-right">
+            <button class="btn-primary"><i class="fa-solid fa-eye mr-1"></i> View Details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🚫 Uncomment below block when no orders exist -->
+      <!--
+      <div class="text-center py-20 text-gray-500">
+        <i class="fa-solid fa-box-open text-5xl mb-4 text-gray-400"></i>
+        <p class="text-lg font-medium">You haven't placed any orders yet.</p>
+        <p class="text-sm text-gray-400 mt-1">Start exploring our delicious menu!</p>
+        <a href="/" class="mt-6 inline-block bg-amber-600 text-white px-6 py-3 rounded-lg hover:bg-amber-700 transition font-medium">
+          🍽️ Browse Menu
+        </a>
+      </div>
+      -->
+    </section>
+  </main>
+
+  <!-- ========================= 🌟 FOOTER ========================= -->
+  <footer class="bg-gray-900 text-gray-400 text-center py-6 mt-12">
+    <p>&copy; 2025 <span class="text-amber-500 font-semibold">Soviare Restaurant</span>. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

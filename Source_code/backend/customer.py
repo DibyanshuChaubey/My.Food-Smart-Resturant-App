@@ -4,6 +4,28 @@ from models import db, Order, PrivateRoom, Event, User
 
 customer_bp = Blueprint('customer', __name__, url_prefix='/customer')
 
+# ============================
+# 📦 CUSTOMER ORDERS PAGE
+# ============================
+
+@customer_bp.route('/orders')
+def customer_orders():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        flash("Please login first to view your orders.")
+        return redirect(url_for('auth.otp_login'))
+
+    # ✅ If you have an Order model — show actual data
+    try:
+        orders = Order.query.filter_by(user_id=user_id).order_by(Order.created_at.desc()).all()
+    except Exception as e:
+        print("⚠️ DB Error loading orders:", e)
+        orders = []
+
+    return render_template('customer_orders.html', orders=orders)
+
+
 # ----------------------------------------------------
 # 1️⃣ Customer Panel (Welcome Page)
 # ----------------------------------------------------
