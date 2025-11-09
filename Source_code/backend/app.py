@@ -57,6 +57,28 @@ def db_check():
     except Exception as e:
         return f"❌ DB Error: {e}"
 
+from flask import g
+from sqlalchemy import text
+import time
+
+@app.before_request
+def db_health_check():
+    """Optional: lightweight DB connection check (every request)"""
+    try:
+        start = time.time()
+        db.session.execute(text("SELECT 1"))
+        g.db_latency = round((time.time() - start) * 1000, 2)
+    except Exception as e:
+        print("❌ Database connection issue detected:", e)
+
+@app.after_request
+def log_db_status(response):
+    """Logs request + DB health details to Render logs"""
+    if hasattr(g, "db_latency"):
+        print(f"✅ DB OK | Query latency: {g.db_latency} ms | Path: {request.path}")
+    else:
+        print(f"⚠️ DB check skipped | Path: {request.path}")
+    return response
 
 
 
