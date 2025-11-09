@@ -14,25 +14,26 @@ class Config:
     # 💾 Database
     # -------------------------------
     # If DATABASE_URL is provided (Render/Postgres), use that. Otherwise, use local SQLite.
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        'DATABASE_URL',
-        'sqlite:///database.db'  # local fallback
-    ).replace("postgres://", "postgresql://")  # Render’s fix for SQLAlchemy
+   # -------------------------------
+# 💾 Database (PostgreSQL on Render)
+# -------------------------------
+    import urllib.parse
 
+    uri = os.getenv('DATABASE_URL', 'sqlite:///database.db')
+
+# Render gives DATABASE_URL starting with "postgres://", which SQLAlchemy dislikes
+    if uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+
+# ✅ Force SSL for PostgreSQL on Render
+    if "postgresql" in uri:
+        if "?" in uri:
+            uri += "&sslmode=require"
+        else:
+            uri += "?sslmode=require"
+
+    SQLALCHEMY_DATABASE_URI = uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-    # -------------------------------
-    # 📧 Mail Settings (Gmail SMTP)
-    # -------------------------------
-    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
-    MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
-    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS', 'True').lower() in ['true', '1', 't']
-    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
-    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = (
-        os.getenv('MAIL_SENDER_NAME', 'Restaurant App'),
-        os.getenv('MAIL_USERNAME')
-    )
 
     # -------------------------------
     # 🧩 Session Settings
