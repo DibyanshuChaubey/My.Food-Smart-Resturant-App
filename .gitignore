@@ -26,3 +26,10 @@ instance/
 .env
 *.key
 Source_code/backend/test.py
+# Ignore secret and environment files
+.env
+*.env
+test.py
+__pycache__/
+*.sqlite3
+database.db
