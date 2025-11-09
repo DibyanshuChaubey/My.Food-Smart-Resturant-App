@@ -108,3 +108,19 @@
 /* Price & qty */
 .price{ color:var(--gold); font-weight:700; }
 .qty{ width:70px; text-align:center; }
+/* Modern UI Enhancements */
+.btn-primary {
+  @apply bg-amber-600 hover:bg-amber-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition;
+}
+
+.btn-outline {
+  @apply border border-amber-600 text-amber-700 hover:bg-amber-100 font-semibold px-5 py-2 rounded-lg transition;
+}
+
+.section-heading {
+  @apply text-3xl font-bold text-gray-800 text-center mb-6;
+}
+
+.card {
+  @apply bg-white rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1;
+}
