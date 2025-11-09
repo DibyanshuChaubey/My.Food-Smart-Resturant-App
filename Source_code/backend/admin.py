@@ -28,7 +28,7 @@ def login():
             flash('Logged in as admin.', 'success')
             return redirect(url_for('admin.dashboard'))
 
-        # If no DB admin matches, fail silently
+        # If no DB admin matches, fail silentlyP
         return render_template('admin_login.html', error="Invalid admin credentials.")
 
     return render_template('admin_login.html')

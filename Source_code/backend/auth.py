@@ -90,7 +90,7 @@ def send_otp():
     # ✅ Brevo API setup
     api_key = os.getenv("BREVO_API_KEY")
     sender_email = os.getenv("MAIL_USERNAME", "dibyanshuchaubey727@gmail.com")
-    sender_name = os.getenv("MAIL_SENDER_NAME", "Restaurant App")
+    sender_name = os.getenv("MAIL_SENDER_NAME", "My.Foood App")
 
     data = {
         "sender": {"name": sender_name, "email": sender_email},
