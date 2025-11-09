@@ -42,10 +42,20 @@ def inject_auth_state():
         "is_authenticated": bool(session.get("user_id")),
         "user_email": session.get("email")
     }
+
 import os
 print("🧩 DEBUG ENV TEST:")
 print("MAIL USER:", os.getenv("MAIL_USERNAME"))
 print("DB URL:", os.getenv("DATABASE_URL"))
+
+@app.route("/db-check")
+def db_check():
+    try:
+        from models import User
+        count = User.query.count()
+        return f"✅ Database Connected! Found {count} users."
+    except Exception as e:
+        return f"❌ DB Error: {e}"
 
 
 
