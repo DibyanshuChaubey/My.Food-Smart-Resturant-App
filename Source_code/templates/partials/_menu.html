@@ -1,0 +1,64 @@
+<section id="menu" class="section container mx-auto px-4">
+  <div class="section-head">
+    <h2 class="section-title">Signature Menu</h2>
+    <p class="section-sub">Chef-curated dishes for every palate.</p>
+  </div>
+
+  <!-- Categories -->
+  <div class="flex flex-wrap gap-2 justify-center mb-8">
+    <button class="chip menu-category" data-cat="all">All</button>
+    <button class="chip menu-category" data-cat="starters">Starters</button>
+    <button class="chip menu-category" data-cat="mains">Mains</button>
+    <button class="chip menu-category" data-cat="desserts">Desserts</button>
+    <button class="chip menu-category" data-cat="beverages">Beverages</button>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="menuGrid">
+    <!-- Card sample (repeat as needed) -->
+    <div class="card dish-card" data-category="starters">
+      <img class="card-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop" alt="Starter">
+      <div class="card-body">
+        <h3 class="card-title">Tandoori Prawns</h3>
+        <p class="card-sub">Smoked, spiced, and charred to perfection.</p>
+        <div class="flex items-center justify-between mt-3">
+          <span class="price"><span class="dish-price">$18.00</span></span>
+          <div class="flex items-center gap-2">
+            <input type="number" class="qty dish-qty" min="1" value="1">
+            <button class="btn btn-accent add-to-order">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card dish-card" data-category="mains">
+      <img class="card-img" src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop" alt="Main">
+      <div class="card-body">
+        <h3 class="card-title">Butter Chicken</h3>
+        <p class="card-sub">Silky tomato gravy, tender chicken, fenugreek.</p>
+        <div class="flex items-center justify-between mt-3">
+          <span class="price"><span class="dish-price">$22.00</span></span>
+          <div class="flex items-center gap-2">
+            <input type="number" class="qty dish-qty" min="1" value="1">
+            <button class="btn btn-accent add-to-order">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card dish-card" data-category="desserts">
+      <img class="card-img" src="https://images.unsplash.com/photo-1542826438-73923b9d6783?q=80&w=1200&auto=format&fit=crop" alt="Dessert">
+      <div class="card-body">
+        <h3 class="card-title">Gulab Jamun Cheesecake</h3>
+        <p class="card-sub">Classic meets creamy indulgence.</p>
+        <div class="flex items-center justify-between mt-3">
+          <span class="price"><span class="dish-price">$10.00</span></span>
+          <div class="flex items-center gap-2">
+            <input type="number" class="qty dish-qty" min="1" value="1">
+            <button class="btn btn-accent add-to-order">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
