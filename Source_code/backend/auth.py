@@ -108,8 +108,12 @@ def send_otp():
             </div>
         """
     }
+    if api_key:
+        print("DEBUG: BREVO_API_KEY exists?", bool(api_key))
+        print("DEBUG: BREVO_API_KEY starts with:", str(api_key)[:10])
 
     try:
+
         # ✅ Send email via Brevo
         res = requests.post(
             "https://api.brevo.com/v3/smtp/email",
