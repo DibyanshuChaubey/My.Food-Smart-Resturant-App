@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-100 to-gray-200 min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-md fade-in border border-gray-300">
+    <div class="mb-6 text-center">
+      <h1 class="text-3xl font-bold text-blue-700">🔐 Admin Panel</h1>
+      <p class="text-gray-500 text-sm mt-1">Authorized access only</p>
+    </div>
+
+    {% if error %}
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm text-center">
+        {{ error }}
+      </div>
+    {% endif %}
+
+    <!-- fixed: action now /admin/login -->
+    <form method="POST" action="/admin/login">
+      <label class="block font-semibold text-gray-700 mb-1">Email</label>
+      <input type="email" name="email" placeholder="admin@example.com" required
+             class="w-full border border-gray-300 px-4 py-2 rounded focus:ring focus:ring-blue-200 mb-4">
+
+      <label class="block font-semibold text-gray-700 mb-1">Password</label>
+      <input type="password" name="password" placeholder="••••••••" required
+             class="w-full border border-gray-300 px-4 py-2 rounded focus:ring focus:ring-blue-200 mb-6">
+
+      <button type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition duration-200">
+        Login
+      </button>
+    </form>
+  </div>
+
+</body>
+</html>
