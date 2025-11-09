@@ -89,7 +89,7 @@ def send_otp():
 
     # ✅ Brevo API setup
     api_key = os.getenv("BREVO_API_KEY")
-    sender_email = os.getenv("MAIL_USERNAME", "9b2076001@smtp-brevo.com")
+    sender_email = os.getenv("MAIL_USERNAME", "dibyanshuchaubey727@gmail.com")
     sender_name = os.getenv("MAIL_SENDER_NAME", "Restaurant App")
 
     data = {
