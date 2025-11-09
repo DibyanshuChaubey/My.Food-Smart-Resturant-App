@@ -6,6 +6,10 @@ from models import db
 from auth import auth_bp, mail as auth_mail
 from customer import customer_bp
 from admin import admin_bp
+import os
+import time
+from flask import g, request
+from sqlalchemy import text
 
 def create_app():
     app = Flask(__name__, template_folder='../templates')
@@ -27,9 +31,12 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+    app = Flask(__name__, static_folder="../static", template_folder="../templates")
+
     @app.route('/')
     def home():
         return render_template('index.html')
+    
 
     return app
 
@@ -42,11 +49,7 @@ def inject_auth_state():
         "is_authenticated": bool(session.get("user_id")),
         "user_email": session.get("email")
     }
-import os
-import time
-from flask import g, request
-from sqlalchemy import text
-from models import db
+
 
 # =====================================================
 # 🔍 Environment Debug (only once on startup)
@@ -101,7 +104,6 @@ def log_db_status(response):
         else:
             print(f"⚠️ DB check skipped or failed | Path: {request.path}")
     return response
-
 
 
 

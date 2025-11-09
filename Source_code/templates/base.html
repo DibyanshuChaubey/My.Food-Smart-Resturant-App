@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{% block title %}Soviare | Fine Dining{% endblock %}</title>
+
+  <!-- Tailwind (Premium Config + Caching) -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#0b0d0f',
+            ivory: '#f6f6f3',
+            gold: '#d4a44b',
+            accent: '#ff6a3d',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Your custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+
+<body class="bg-ivory text-ivory/90 antialiased">
+  {% include "partials/_navbar.html" %}
+  <main class="pt-[72px]">{% block content %}{% endblock %}</main>
+  {% include "partials/_footer.html" %}
+
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+
+
+</html>

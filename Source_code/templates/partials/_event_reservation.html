@@ -1,0 +1,25 @@
+<section id="event-reservation" class="section container mx-auto px-4">
+  <div class="section-head">
+    <h2 class="section-title">Events & Banquets</h2>
+    <p class="section-sub">Host a memorable gathering with curated menus.</p>
+  </div>
+
+  <div class="panel">
+    <div class="flex items-center justify-between gap-3">
+      <p class="text-ivory/75">Weddings, socials, corporate retreats — we’ve got you covered.</p>
+      <button id="showEventForm" class="btn btn-accent">Reserve Event</button>
+    </div>
+
+    <div id="eventFormWrapper" class="mt-6 hidden">
+      <form id="eventReservationForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" placeholder="Your Name" class="input" required />
+        <input type="email" placeholder="Email" class="input" required />
+        <input type="text" placeholder="Event Type (Wedding, Party, etc.)" class="input" required />
+        <input type="number" placeholder="Number of Guests" class="input" required />
+        <input type="date" class="input" required />
+        <textarea placeholder="Any other details?" class="input md:col-span-2 h-28"></textarea>
+        <button type="submit" class="btn btn-gold md:col-span-2">Submit Reservation</button>
+      </form>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+<section id="private-rooms" class="section container mx-auto px-4">
+  <div class="section-head">
+    <h2 class="section-title">Private Rooms</h2>
+    <p class="section-sub">Celebrate intimately with bespoke service.</p>
+  </div>
+
+  <div class="panel">
+    <div class="flex items-center justify-between gap-3">
+      <p class="text-ivory/75">Reserve for birthdays, anniversaries, or corporate meetings.</p>
+      <button id="showPrivateRoomForm" class="btn btn-accent">Book Now</button>
+    </div>
+
+    <div id="privateRoomFormWrapper" class="mt-6 hidden">
+      <form id="privateRoomForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" placeholder="Your Name" class="input" required />
+        <input type="email" placeholder="Email" class="input" required />
+        <input type="date" class="input" required />
+        <input type="time" class="input" required />
+        <textarea placeholder="Special requests" class="input md:col-span-2 h-28"></textarea>
+        <button type="submit" class="btn btn-gold md:col-span-2">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+</section>

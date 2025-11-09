@@ -1,0 +1,46 @@
+<section id="order" class="section container mx-auto px-4">
+  <div class="section-head">
+    <h2 class="section-title">Your Order</h2>
+    <p class="section-sub">Review your cart and choose delivery method.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <!-- Summary -->
+    <div class="panel">
+      <h3 class="panel-title">Cart Summary</h3>
+      <div id="order-summary" class="space-y-3 text-ivory/80"></div>
+      <div id="order-total" class="mt-4 font-semibold text-gold"></div>
+    </div>
+
+    <!-- Checkout -->
+    <div class="panel">
+      <h3 class="panel-title">Checkout</h3>
+      <form id="reservationForm" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input id="name" type="text" placeholder="Full Name" class="input" required>
+          <input id="email" type="email" placeholder="Email" class="input" required>
+          <input id="phone" type="tel" placeholder="Phone" class="input" required>
+        </div>
+
+        <div>
+          <label class="label">Delivery Method</label>
+          <select id="delivery-method" class="input">
+            <option value="pickup">Pickup</option>
+            <option value="delivery">Delivery</option>
+          </select>
+        </div>
+
+        <div id="address-wrapper" class="hidden">
+          <input id="address" type="text" placeholder="Delivery Address" class="input">
+        </div>
+
+        <textarea id="specialRequests" placeholder="Any special requests?" class="input h-28"></textarea>
+
+        <div class="flex items-center gap-3">
+          <button type="submit" class="btn btn-gold">Place Order</button>
+          <button type="button" id="clearCart" class="btn btn-outline">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
