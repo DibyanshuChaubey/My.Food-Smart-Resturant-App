@@ -1,3 +1,8 @@
+/* =====================================================
+ 🌟 SMART RESTAURANT FRONTEND JS
+    Handles Navbar, Orders, Forms, and Auth-Linked Flows
+ ===================================================== */
+
 /* ============== UI: Navbar dropdowns & mobile drawer ============== */
 (function(){
   const toggleDropdown = (el, open) => {
@@ -9,6 +14,7 @@
     const trigger = dd.querySelector('[data-dropdown-trigger]');
     let hoverTimer;
 
+    // Hover behavior for desktop
     dd.addEventListener('mouseenter', ()=> {
       clearTimeout(hoverTimer);
       toggleDropdown(dd, true);
@@ -16,45 +22,55 @@
     dd.addEventListener('mouseleave', ()=> {
       hoverTimer = setTimeout(()=>toggleDropdown(dd,false), 120);
     });
+
+    // Click for mobile & fallback
     trigger?.addEventListener('click', (e)=>{
       e.stopPropagation();
       toggleDropdown(dd, !dd.classList.contains('open'));
     });
   });
 
+  // Close any open dropdown when clicking elsewhere
   document.addEventListener('click', ()=> {
     document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open'));
   });
 
-  // Mobile drawer
+  // ================================
+  // Mobile Drawer Menu Toggle
+  // ================================
   const mobileBtn = document.getElementById('mobileMenuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
   const orderNowMobile = document.getElementById('confirmOrderBtnMobile');
+
   if (mobileBtn && mobileMenu){
     mobileBtn.addEventListener('click', ()=> mobileMenu.classList.toggle('hidden'));
   }
+
   orderNowMobile?.addEventListener('click', ()=>{
     document.getElementById("menu")?.scrollIntoView({behavior:"smooth"});
     mobileMenu.classList.add('hidden');
   });
 })();
 
-/* ============== Cart & Order (keeps your original IDs/classes) ============== */
+/* =====================================================
+ 🛒 CART & ORDER SYSTEM
+ ===================================================== */
 const orderItems = [];
 const summaryEl = document.getElementById('order-summary');
 const totalEl = document.getElementById('order-total');
-const checkoutSection = document.getElementById('order'); // panel wraps form
 const deliverySelect = document.getElementById('delivery-method');
 const addressWrapper = document.getElementById('address-wrapper');
 const confirmOrderBtn = document.getElementById('confirmOrderBtn');
 
-/* Render summary */
+/* ========== Render summary ========== */
 function renderSummary(){
   if (!summaryEl || !totalEl) return;
+
   summaryEl.innerHTML = '';
   let total = 0;
+
   if (orderItems.length === 0){
-    summaryEl.innerHTML = '<p class="text-ivory/60 italic">No items yet. Please add something from the menu.</p>';
+    summaryEl.innerHTML = '<p class="text-gray-400 italic">No items yet. Please add something from the menu.</p>';
   } else {
     orderItems.forEach(item=>{
       total += item.price * item.quantity;
@@ -68,6 +84,7 @@ function renderSummary(){
       summaryEl.appendChild(row);
     });
   }
+
   totalEl.textContent = `Total: $${total.toFixed(2)}`;
 
   // remove handlers
@@ -76,13 +93,15 @@ function renderSummary(){
       const name = btn.getAttribute('data-remove');
       const idx = orderItems.findIndex(i=>i.name===name);
       if (idx>-1) orderItems.splice(idx,1);
+
       // re-enable add button
       document.querySelectorAll('.dish-card').forEach(card=>{
         const title = card.querySelector('.card-title')?.textContent?.trim();
         if (title === name){
           const addBtn = card.querySelector('.add-to-order');
           if (addBtn){ addBtn.disabled=false; addBtn.textContent='Add'; }
-          const qty = card.querySelector('.dish-qty'); if (qty) qty.value = 1;
+          const qty = card.querySelector('.dish-qty');
+          if (qty) qty.value = 1;
         }
       });
       renderSummary();
@@ -90,24 +109,29 @@ function renderSummary(){
   });
 }
 
-/* Add-to-order */
+/* ========== Add-to-order ========== */
 document.querySelectorAll('.add-to-order').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const card = btn.closest('.dish-card');
     const name = card.querySelector('.card-title').textContent.trim();
     const price = parseFloat(card.querySelector('.dish-price').textContent.replace('$',''));
     const qty = parseInt(card.querySelector('.dish-qty').value || '1', 10);
+
     if (!qty || qty<1) return alert('Please enter a valid quantity.');
+
     const existing = orderItems.find(i=>i.name===name);
     if (existing) existing.quantity += qty;
     else orderItems.push({ name, price, quantity: qty });
-    btn.disabled = true; btn.textContent = '✔ Added';
+
+    btn.disabled = true;
+    btn.textContent = '✔ Added';
+
     renderSummary();
     document.getElementById('order')?.scrollIntoView({behavior:'smooth'});
   });
 });
 
-/* Category filter */
+/* ========== Category filter ========== */
 document.querySelectorAll('.menu-category').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     const cat = chip.getAttribute('data-cat');
@@ -118,18 +142,37 @@ document.querySelectorAll('.menu-category').forEach(chip=>{
   });
 });
 
-/* Delivery toggle */
+/* ========== Delivery toggle ========== */
 deliverySelect?.addEventListener('change', ()=>{
   if (deliverySelect.value === 'delivery') addressWrapper?.classList.remove('hidden');
-  else { addressWrapper?.classList.add('hidden'); const addr=document.getElementById('address'); if (addr) addr.value=''; }
+  else {
+    addressWrapper?.classList.add('hidden');
+    const addr=document.getElementById('address');
+    if (addr) addr.value='';
+  }
 });
 
-/* Order Now buttons smooth scroll */
-confirmOrderBtn?.addEventListener('click', ()=>{
-  document.getElementById("menu")?.scrollIntoView({behavior:"smooth"});
+/* =====================================================
+ ⚡ ORDER NOW BUTTON (AUTH-AWARE)
+ ===================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const orderBtn = document.getElementById("confirmOrderBtn");
+  if (orderBtn) {
+    orderBtn.addEventListener("click", () => {
+      const isLoggedIn = document.body.dataset.auth === "true";
+      if (isLoggedIn) {
+        document.querySelector("#menu")?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        sessionStorage.setItem("redirectAfterLogin", "/#menu");
+        window.location.href = "/otp_login";
+      }
+    });
+  }
 });
 
-/* Clear cart */
+/* =====================================================
+ 🧹 Clear cart
+ ===================================================== */
 document.getElementById('clearCart')?.addEventListener('click', ()=>{
   orderItems.length = 0;
   renderSummary();
@@ -137,7 +180,9 @@ document.getElementById('clearCart')?.addEventListener('click', ()=>{
   document.querySelectorAll('.dish-qty').forEach(q=>q.value=1);
 });
 
-/* Submit order with login-preserve */
+/* =====================================================
+ 🧾 Submit Order (AJAX + login handling)
+ ===================================================== */
 document.getElementById('reservationForm')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   if (orderItems.length===0) return alert('Please add items to your order.');
@@ -190,7 +235,9 @@ function resetAll(){
   document.querySelectorAll('.dish-qty').forEach(q=>q.value=1);
 }
 
-/* ============== Private Room ============== */
+/* =====================================================
+ 🏠 PRIVATE ROOM BOOKING
+ ===================================================== */
 (function(){
   const showBtn = document.getElementById('showPrivateRoomForm');
   const wrap = document.getElementById('privateRoomFormWrapper');
@@ -219,7 +266,8 @@ function resetAll(){
       if (result.login_required){
         sessionStorage.setItem('pendingPrivateRoom', JSON.stringify(formData));
         sessionStorage.setItem('redirectAfterLogin','/#private-rooms');
-        location.href='/otp_login'; return;
+        location.href='/otp_login';
+        return;
       }
       if (res.ok && result.success){
         alert('✅ Private room booked!');
@@ -231,7 +279,9 @@ function resetAll(){
   });
 })();
 
-/* ============== Event Reservation ============== */
+/* =====================================================
+ 🎉 EVENT RESERVATION
+ ===================================================== */
 (function(){
   const showBtn = document.getElementById('showEventForm');
   const wrap = document.getElementById('eventFormWrapper');
@@ -261,7 +311,8 @@ function resetAll(){
       if (result.login_required){
         sessionStorage.setItem('pendingEvent', JSON.stringify(formData));
         sessionStorage.setItem('redirectAfterLogin','/#event-reservation');
-        location.href='/otp_login'; return;
+        location.href='/otp_login';
+        return;
       }
       if (res.ok && result.success){
         alert('✅ Event reserved!');
@@ -273,9 +324,14 @@ function resetAll(){
   });
 })();
 
-/* ============== Restore pending after login ============== */
+/* =====================================================
+ 🔄 RESTORE PENDING ACTIONS AFTER LOGIN
+ ===================================================== */
 window.addEventListener('load', ()=>{
   const redirect = sessionStorage.getItem('redirectAfterLogin');
-  if (redirect){ sessionStorage.removeItem('redirectAfterLogin'); location.hash = redirect.split('#')[1] || ''; }
+  if (redirect){
+    sessionStorage.removeItem('redirectAfterLogin');
+    location.hash = redirect.split('#')[1] || '';
+  }
   renderSummary();
 });
