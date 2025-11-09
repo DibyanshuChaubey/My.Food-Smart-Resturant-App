@@ -17,23 +17,28 @@ class Config:
    # -------------------------------
 # 💾 Database (PostgreSQL on Render)
 # -------------------------------
+# -------------------------------
+# 💾 Database Configuration (Render Safe)
+# -------------------------------
     import urllib.parse
 
-    uri = os.getenv('DATABASE_URL', 'sqlite:///database.db')
+    uri = os.getenv("DATABASE_URL", "sqlite:///database.db")
 
-# Render gives DATABASE_URL starting with "postgres://", which SQLAlchemy dislikes
+# Render still sometimes provides old postgres:// URIs
     if uri.startswith("postgres://"):
         uri = uri.replace("postgres://", "postgresql://", 1)
 
-# ✅ Force SSL for PostgreSQL on Render
+# ✅ Enforce SSL for PostgreSQL to fix "bad record mac" errors
     if "postgresql" in uri:
         if "?" in uri:
-            uri += "&sslmode=require"
+            if "sslmode" not in uri:
+                uri += "&sslmode=require"
         else:
             uri += "?sslmode=require"
 
     SQLALCHEMY_DATABASE_URI = uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
     # -------------------------------
     # 🧩 Session Settings
