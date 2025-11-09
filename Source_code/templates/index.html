@@ -70,19 +70,32 @@
       <a href="#home" class="hover:text-amber-600 transition">Home</a>
       <a href="#menu" class="hover:text-amber-600 transition">Menu</a>
 
-      <div class="relative group">
-        <button class="flex items-center gap-1 hover:text-amber-600 transition">
-          Bookings
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-[2px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        <div
-          class="absolute left-0 mt-3 hidden group-hover:flex flex-col bg-white shadow-xl border border-gray-100 rounded-xl w-48 overflow-hidden">
-          <a href="#private-rooms" class="px-5 py-2 hover:bg-amber-50 text-gray-700">Private Rooms</a>
-          <a href="#event-reservation" class="px-5 py-2 hover:bg-amber-50 text-gray-700">Events</a>
-        </div>
-      </div>
+<!-- 📅 Bookings Dropdown -->
+<div class="relative">
+  <button class="peer nav-link flex items-center gap-1">
+    Bookings
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div 
+    class="absolute left-0 mt-2 min-w-[180px] bg-white shadow-lg rounded-lg 
+           opacity-0 invisible peer-hover:opacity-100 peer-hover:visible 
+           hover:opacity-100 hover:visible transition-all duration-200 z-50 border border-gray-100">
+    <a href="#private-rooms" 
+       class="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition rounded-t-md">
+      Private Rooms
+    </a>
+    <a href="#event-reservation" 
+       class="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition rounded-b-md">
+      Events
+    </a>
+  </div>
+</div>
+
+
 
       <a href="#contact" class="hover:text-amber-600 transition">Contact</a>
     </nav>
@@ -92,26 +105,32 @@
 
       {% if is_authenticated %}
       <!-- User Dropdown -->
-      <div class="relative group">
-        <button class="flex items-center gap-2 bg-amber-600 text-white px-4 py-2 rounded-full hover:bg-amber-700 transition shadow-sm">
-          <div class="h-7 w-7 rounded-full bg-white text-amber-700 flex items-center justify-center font-bold text-sm">
-            {{ user_email[0] }}
-          </div>
-          <span class="font-medium truncate max-w-[120px]">{{ user_email.split('@')[0] | capitalize }}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+      <!-- Profile Dropdown -->
+<div class="relative">
+  <!-- The trigger button -->
+  <button 
+    class="peer bg-amber-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-amber-700 transition flex items-center gap-2">
+    <div class="w-7 h-7 rounded-full bg-white text-amber-700 flex items-center justify-center font-bold text-sm uppercase">
+      {{ user_email[0] }}
+    </div>
+    <span class="text-sm truncate max-w-[140px]">{{ user_email.split('@')[0] | capitalize }}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
 
-        <!-- Dropdown -->
-        <div
-          class="absolute right-0 mt-3 hidden group-hover:flex flex-col bg-white border border-gray-100 shadow-xl rounded-xl w-52 overflow-hidden">
-          <a href="/customer/dashboard" class="px-5 py-2 hover:bg-amber-50 text-gray-700">My Dashboard</a>
-          <a href="/customer/orders" class="px-5 py-2 hover:bg-amber-50 text-gray-700">My Orders</a>
-          <hr class="border-gray-200 my-1" />
-          <a href="/logout" class="px-5 py-2 text-red-600 hover:bg-red-50 font-medium">Logout</a>
-        </div>
-      </div>
+  <!-- Dropdown Menu -->
+  <div 
+    class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 invisible 
+           peer-hover:opacity-100 peer-hover:visible hover:opacity-100 hover:visible 
+           transition-all duration-200 z-50">
+    <a href="/customer/dashboard" class="block px-4 py-2 hover:bg-amber-50 rounded">My Dashboard</a>
+    <a href="/customer/orders" class="block px-4 py-2 hover:bg-amber-50 rounded">My Orders</a>
+    <div class="border-t border-gray-200 my-1"></div>
+    <a href="/logout" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded">Logout</a>
+  </div>
+</div>
+
       {% else %}
       <div class="flex items-center gap-3">
         <a href="/otp_login" class="bg-amber-600 text-white px-4 py-2 rounded-full hover:bg-amber-700 transition shadow-sm">Login</a>
