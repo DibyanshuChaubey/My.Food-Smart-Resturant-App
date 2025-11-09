@@ -71,7 +71,7 @@
       <a href="#menu" class="hover:text-amber-600 transition">Menu</a>
 
 <!-- 📅 Bookings Dropdown -->
-<div class="relative">
+<div class="relative group">
   <button class="peer nav-link flex items-center gap-1">
     Bookings
     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,7 +106,7 @@
       {% if is_authenticated %}
       <!-- User Dropdown -->
       <!-- Profile Dropdown -->
-<div class="relative">
+<div class="relative group">
   <!-- The trigger button -->
   <button 
     class="peer bg-amber-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-amber-700 transition flex items-center gap-2">
@@ -125,7 +125,7 @@
            peer-hover:opacity-100 peer-hover:visible hover:opacity-100 hover:visible 
            transition-all duration-200 z-50">
     <a href="/customer/dashboard" class="block px-4 py-2 hover:bg-amber-50 rounded">My Dashboard</a>
-    <a href="/customer/orders" class="block px-4 py-2 hover:bg-amber-50 rounded">My Orders</a>
+    <a href="/customer/orders" class="dropdown-item">My Orders</a>
     <div class="border-t border-gray-200 my-1"></div>
     <a href="/logout" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded">Logout</a>
   </div>
