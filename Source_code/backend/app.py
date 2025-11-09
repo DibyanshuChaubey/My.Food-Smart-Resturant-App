@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_cors import CORS
 from flask_mail import Mail
 from config import Config
@@ -23,7 +23,7 @@ def create_app():
     app.register_blueprint(customer_bp)
     app.register_blueprint(admin_bp)
 
-    # ✅ Create all tables safely
+    # ✅ Create all tables safe
     with app.app_context():
         db.create_all()
 

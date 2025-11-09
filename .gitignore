@@ -22,3 +22,7 @@ venv/
 # Flask debug files
 instance/
 *.db
+# Secrets
+.env
+*.key
+Source_code/backend/test.py
