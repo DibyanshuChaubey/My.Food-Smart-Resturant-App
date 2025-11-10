@@ -2,43 +2,88 @@
 {% block title %}{{ title }} — Admin{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto p-6">
-  <h2 class="text-2xl font-bold mb-4">{{ title }}</h2>
+<section class="min-h-screen bg-[#fdfcf9] text-gray-900 py-16 px-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-3xl font-bold text-amber-700 tracking-wide flex items-center gap-3">
+        <i class="fa-solid fa-list text-amber-600"></i> {{ title }}
+      </h2>
+      <a href="{{ url_for('admin.dashboard') }}" class="text-sm text-amber-600 hover:text-amber-500 underline">
+        ← Back to Dashboard
+      </a>
+    </div>
 
-  <div class="space-y-3">
-    {% for item in items %}
-      <div class="bg-white p-4 rounded shadow">
+    <!-- Records -->
+    <div class="space-y-4">
+      {% for item in items %}
+      <div class="bg-white border border-amber-100 p-5 rounded-xl shadow-sm hover:shadow-md hover:border-amber-200 transition">
         {% if kind == 'orders' %}
-          <div class="flex justify-between">
-            <div>
-              <div class="font-semibold">Order #{{ item.id }} — {{ item.status }}</div>
-              <div class="text-sm text-gray-500">Total: ${{ '%.2f'|format(item.total) }} • Created: {{ item.created_at.strftime("%Y-%m-%d %H:%M") }}</div>
-              <div class="text-sm text-gray-700 mt-2">Items: {{ item.items }}</div>
+        <!-- 🧾 Orders Section -->
+        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+          <div>
+            <div class="font-semibold text-lg text-amber-700">
+              Order #{{ item.id }} <span class="text-sm text-gray-500">• {{ item.status }}</span>
             </div>
-            <div class="flex flex-col gap-2">
-              <form method="post" action="{{ url_for('admin.change_order_status', order_id=item.id) }}">
-                <select name="status" class="border px-2 py-1 rounded">
-                  <option value="Pending" {% if item.status=='Pending' %}selected{% endif %}>Pending</option>
-                  <option value="Preparing" {% if item.status=='Preparing' %}selected{% endif %}>Preparing</option>
-                  <option value="Completed" {% if item.status=='Completed' %}selected{% endif %}>Completed</option>
-                </select>
-                <button class="mt-2 px-3 py-1 bg-amber-600 text-white rounded">Update</button>
-              </form>
+            <div class="text-sm text-gray-500 mt-1">
+              Total: <span class="text-amber-700 font-medium">${{ '%.2f'|format(item.total) }}</span> •
+              Created: {{ item.created_at.strftime("%Y-%m-%d %H:%M") }}
+            </div>
+            <div class="text-sm text-gray-700 mt-2 bg-amber-50 border border-amber-100 rounded-lg p-2">
+              <span class="font-medium text-amber-800">Items:</span> {{ item.items }}
             </div>
           </div>
+
+          <div>
+            <form method="post" action="{{ url_for('admin.change_order_status', order_id=item.id) }}" class="flex flex-col gap-2">
+              <select name="status" class="border border-amber-200 rounded-lg px-3 py-1.5 text-sm focus:border-amber-400 focus:ring-amber-200 transition">
+                <option value="Pending" {% if item.status=='Pending' %}selected{% endif %}>Pending</option>
+                <option value="Preparing" {% if item.status=='Preparing' %}selected{% endif %}>Preparing</option>
+                <option value="Completed" {% if item.status=='Completed' %}selected{% endif %}>Completed</option>
+              </select>
+              <button class="mt-1 px-4 py-1.5 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-500 transition">
+                Update
+              </button>
+            </form>
+          </div>
+        </div>
+
         {% elif kind == 'rooms' %}
-          <div class="font-semibold">{{ item.name }} • {{ item.date }} {{ item.time }}</div>
-          <div class="text-sm text-gray-500">{{ item.email }} • Booked: {{ item.created_at.strftime("%Y-%m-%d") }}</div>
-          <div class="mt-2 text-sm">{{ item.message }}</div>
+        <!-- 🏠 Private Rooms Section -->
+        <div>
+          <div class="font-semibold text-lg text-amber-700">
+            {{ item.name }}
+            <span class="text-sm text-gray-500">• {{ item.date }} {{ item.time }}</span>
+          </div>
+          <div class="text-sm text-gray-500 mt-1">
+            {{ item.email }} • Booked: {{ item.created_at.strftime("%Y-%m-%d") }}
+          </div>
+          <div class="mt-2 text-sm bg-amber-50 border border-amber-100 rounded-lg p-2 text-gray-800">
+            {{ item.message }}
+          </div>
+        </div>
+
         {% elif kind == 'events' %}
-          <div class="font-semibold">{{ item.event_type }} • Guests: {{ item.guests }}</div>
-          <div class="text-sm text-gray-500">{{ item.email }} • Date: {{ item.date }}</div>
-          <div class="mt-2 text-sm">{{ item.message }}</div>
+        <!-- 🎉 Events Section -->
+        <div>
+          <div class="font-semibold text-lg text-amber-700">
+            {{ item.event_type }} <span class="text-sm text-gray-500">• Guests: {{ item.guests }}</span>
+          </div>
+          <div class="text-sm text-gray-500 mt-1">
+            {{ item.email }} • Date: {{ item.date }}
+          </div>
+          <div class="mt-2 text-sm bg-amber-50 border border-amber-100 rounded-lg p-2 text-gray-800">
+            {{ item.message }}
+          </div>
+        </div>
         {% endif %}
       </div>
-    {% else %}
-      <div class="text-gray-500 italic">No records found.</div>
-    {% endfor %}
+      {% else %}
+      <div class="text-gray-500 italic text-center mt-8">
+        No records found.
+      </div>
+      {% endfor %}
+    </div>
   </div>
-</div>
+</section>
 {% endblock %}

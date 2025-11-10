@@ -1,12 +1,12 @@
-<section id="menu" class="section container mx-auto px-4 bg-[#f7f5f0] py-16 ">
-  <div class="section-head">
-    <h2 class="section-title">Signature Menu</h2>
-    <p class="section-sub">Chef-curated dishes for every palate.</p>
+<section id="menu" class="section container mx-auto px-4 bg-charcoal text-ivory py-16">
+  <div class="section-head text-center mb-10">
+    <h2 class="text-3xl font-bold text-gold mb-2">Signature Menu</h2>
+    <p class="text-ivory/70">Chef-curated dishes for every palate.</p>
   </div>
 
   <!-- Categories -->
-  <div class="flex flex-wrap gap-2 justify-center mb-8">
-    <button class="chip menu-category" data-cat="all">All</button>
+  <div class="flex flex-wrap gap-3 justify-center mb-10">
+    <button class="chip menu-category active" data-cat="all">All</button>
     <button class="chip menu-category" data-cat="starters">Starters</button>
     <button class="chip menu-category" data-cat="mains">Mains</button>
     <button class="chip menu-category" data-cat="desserts">Desserts</button>
@@ -14,51 +14,64 @@
   </div>
 
   <!-- Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="menuGrid">
-    <!-- Card sample (repeat as needed) -->
-    <div class="card dish-card" data-category="starters">
-      <img class="card-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop" alt="Starter">
-      <div class="card-body">
-        <h3 class="card-title">Tandoori Prawns</h3>
-        <p class="card-sub">Smoked, spiced, and charred to perfection.</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="menuGrid">
+
+    <!-- Dish Card -->
+    <div class="card dish-card group bg-charcoal-2 border border-gold/10 rounded-xl overflow-hidden hover:border-gold/25 hover:shadow-lg hover:shadow-gold/10 transition" data-category="starters">
+      <img class="card-img h-56 w-full object-cover group-hover:scale-[1.03] transition duration-300 ease-in-out"
+           src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop" alt="Starter">
+      <div class="card-body p-5">
+        <h3 class="card-title text-lg font-semibold text-gold mb-1">Tandoori Prawns</h3>
+        <p class="card-sub text-ivory/70 text-sm mb-3">Smoked, spiced, and charred to perfection.</p>
         <div class="flex items-center justify-between mt-3">
-          <span class="price"><span class="dish-price">$18.00</span></span>
+          <span class="price text-gold font-bold text-lg"><span class="dish-price">$18.00</span></span>
           <div class="flex items-center gap-2">
-            <input type="number" class="qty dish-qty" min="1" value="1">
-            <button class="btn btn-accent add-to-order">Add</button>
+            <input type="number" class="qty dish-qty w-14 text-center bg-charcoal text-ivory border border-gold/20 rounded-md py-1 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold" min="1" value="1">
+            <button class="btn btn-accent add-to-order px-3 py-2 rounded-lg text-sm font-semibold transition hover:brightness-110">
+              Add
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card dish-card" data-category="mains">
-      <img class="card-img" src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop" alt="Main">
-      <div class="card-body">
-        <h3 class="card-title">Butter Chicken</h3>
-        <p class="card-sub">Silky tomato gravy, tender chicken, fenugreek.</p>
+    <!-- Dish Card -->
+    <div class="card dish-card group bg-charcoal-2 border border-gold/10 rounded-xl overflow-hidden hover:border-gold/25 hover:shadow-lg hover:shadow-gold/10 transition" data-category="mains">
+      <img class="card-img h-56 w-full object-cover group-hover:scale-[1.03] transition duration-300 ease-in-out"
+           src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop" alt="Main">
+      <div class="card-body p-5">
+        <h3 class="card-title text-lg font-semibold text-gold mb-1">Butter Chicken</h3>
+        <p class="card-sub text-ivory/70 text-sm mb-3">Silky tomato gravy, tender chicken, fenugreek.</p>
         <div class="flex items-center justify-between mt-3">
-          <span class="price"><span class="dish-price">$22.00</span></span>
+          <span class="price text-gold font-bold text-lg"><span class="dish-price">$22.00</span></span>
           <div class="flex items-center gap-2">
-            <input type="number" class="qty dish-qty" min="1" value="1">
-            <button class="btn btn-accent add-to-order">Add</button>
+            <input type="number" class="qty dish-qty w-14 text-center bg-charcoal text-ivory border border-gold/20 rounded-md py-1 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold" min="1" value="1">
+            <button class="btn btn-accent add-to-order px-3 py-2 rounded-lg text-sm font-semibold transition hover:brightness-110">
+              Add
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card dish-card" data-category="desserts">
-      <img class="card-img" src="https://images.unsplash.com/photo-1542826438-73923b9d6783?q=80&w=1200&auto=format&fit=crop" alt="Dessert">
-      <div class="card-body">
-        <h3 class="card-title">Gulab Jamun Cheesecake</h3>
-        <p class="card-sub">Classic meets creamy indulgence.</p>
+    <!-- Dish Card -->
+    <div class="card dish-card group bg-charcoal-2 border border-gold/10 rounded-xl overflow-hidden hover:border-gold/25 hover:shadow-lg hover:shadow-gold/10 transition" data-category="desserts">
+      <img class="card-img h-56 w-full object-cover group-hover:scale-[1.03] transition duration-300 ease-in-out"
+           src="https://images.unsplash.com/photo-1542826438-73923b9d6783?q=80&w=1200&auto=format&fit=crop" alt="Dessert">
+      <div class="card-body p-5">
+        <h3 class="card-title text-lg font-semibold text-gold mb-1">Gulab Jamun Cheesecake</h3>
+        <p class="card-sub text-ivory/70 text-sm mb-3">Classic meets creamy indulgence.</p>
         <div class="flex items-center justify-between mt-3">
-          <span class="price"><span class="dish-price">$10.00</span></span>
+          <span class="price text-gold font-bold text-lg"><span class="dish-price">$10.00</span></span>
           <div class="flex items-center gap-2">
-            <input type="number" class="qty dish-qty" min="1" value="1">
-            <button class="btn btn-accent add-to-order">Add</button>
+            <input type="number" class="qty dish-qty w-14 text-center bg-charcoal text-ivory border border-gold/20 rounded-md py-1 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold" min="1" value="1">
+            <button class="btn btn-accent add-to-order px-3 py-2 rounded-lg text-sm font-semibold transition hover:brightness-110">
+              Add
+            </button>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </section>

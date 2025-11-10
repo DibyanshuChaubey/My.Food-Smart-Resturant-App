@@ -1,24 +1,84 @@
-<section id="contact" class="section container mx-auto px-4 bg-[#fefcf8] py-16">
-  <div class="section-head">
-    <h2 class="section-title">Contact & Location</h2>
-    <p class="section-sub">We’d love to host you.</p>
-  </div>
+<section id="contact" class="section bg-charcoal-2 text-ivory">
+  <div class="container max-w-6xl mx-auto px-4">
 
-  <div class="grid md:grid-cols-2 gap-6">
-    <div class="panel">
-      <h3 class="panel-title">Find Us</h3>
-      <p class="text-ivory/75">123 Soviare Lane, Jaipur, IN</p>
-      <p class="text-ivory/75">Open daily: 12:00 – 23:00</p>
-      <p class="text-ivory/75">+91-99999-00000</p>
+    <!-- 📞 Section Header -->
+    <div class="section-head text-center mb-12">
+      <h2 class="section-title text-gold">Contact Us</h2>
+      <p class="section-sub text-ivory/70 max-w-2xl mx-auto">
+        Have a question, feedback, or special request? Reach out to us — we’re here to make your experience delightful.
+      </p>
     </div>
-    <div class="panel">
-      <h3 class="panel-title">Write to Us</h3>
-      <form class="grid grid-cols-1 gap-4">
-        <input type="text" placeholder="Your Name" class="input" required>
-        <input type="email" placeholder="Email" class="input" required>
-        <textarea placeholder="Your message" class="input h-28" required></textarea>
-        <button class="btn btn-gold">Send</button>
+
+    <!-- 🗺️ Layout: Info + Form -->
+    <div class="grid md:grid-cols-2 gap-10">
+
+      <!-- 🏢 Contact Info -->
+      <div class="space-y-6">
+        <h3 class="text-gold text-lg font-semibold mb-4">Our Location</h3>
+        <p class="text-ivory/80 leading-relaxed">
+          Soviare Fine Dining<br>
+          21 Gourmet Street, Downtown City<br>
+          India - 400001
+        </p>
+
+        <div class="space-y-3">
+          <p class="flex items-center gap-3 text-ivory/80">
+            <i class="fa-solid fa-phone text-gold"></i> +91 98765 43210
+          </p>
+          <p class="flex items-center gap-3 text-ivory/80">
+            <i class="fa-solid fa-envelope text-gold"></i> hello@soviare.com
+          </p>
+          <p class="flex items-center gap-3 text-ivory/80">
+            <i class="fa-solid fa-clock text-gold"></i> Mon–Sun: 10:00 AM – 11:00 PM
+          </p>
+        </div>
+
+        <div class="flex gap-4 mt-6">
+          <a href="#" class="text-gold hover:text-amber-400 transition text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="text-gold hover:text-amber-400 transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="text-gold hover:text-amber-400 transition text-2xl"><i class="fa-brands fa-twitter"></i></a>
+        </div>
+      </div>
+
+      <!-- 💌 Contact Form -->
+      <form class="panel bg-charcoal p-6 rounded-2xl border border-gold/10 shadow-gold/10 space-y-4" id="contactForm">
+        <h3 class="panel-title text-gold mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-envelope-open-text text-gold"></i> Send a Message
+        </h3>
+
+        <div>
+          <label class="label">Your Name</label>
+          <input type="text" class="input" placeholder="John Doe" required>
+        </div>
+
+        <div>
+          <label class="label">Email</label>
+          <input type="email" class="input" placeholder="john@example.com" required>
+        </div>
+
+        <div>
+          <label class="label">Message</label>
+          <textarea class="input" rows="4" placeholder="Write your message here..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-gold w-full text-charcoal font-semibold mt-2">
+          <i class="fa-solid fa-paper-plane mr-2"></i> Send Message
+        </button>
       </form>
     </div>
+
+    <!-- 🗺️ Optional Map -->
+    <div class="mt-12 rounded-2xl overflow-hidden border border-gold/10 shadow-gold/10">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.6316756424597!2d72.8776559746173!3d19.076090987086167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c630b0c1ef07%3A0xa2a1db03c9ed8a7e!2sMumbai%20Central!5e0!3m2!1sen!2sin!4v1678815000000!5m2!1sen!2sin"
+        width="100%"
+        height="350"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+
   </div>
 </section>

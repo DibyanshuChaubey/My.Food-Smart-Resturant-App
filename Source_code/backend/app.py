@@ -36,7 +36,19 @@ def create_app():
     # ✅ Define main route
     @app.route('/')
     def home():
-        return render_template('index.html')
+        dishes = [
+        {"id":1,"name": "Truffle Risotto", "price": 18.99, "category": "startters",
+         "description": "Vegitable Salad with fresh ingredients.",
+         "image": "/static/images/vegitable_salad.jpg"},
+        {"id":2,"name": "Grilled Salmon", "price": 22.49, "category": "main-course",
+         "description": "Delicious Crispy Sweet Corn butter sauce.",
+         "image": "/static/images/Sweet_Corn.jpg"},
+        {"id":3,"name": "Tiramisu", "price": 8.99, "category": "desserts",
+         "description": "Classic Italian dessert with mascarpone and cocoa.",
+         "image": "/static/images/tiramisu.jpg"}
+        ]
+        return render_template('index.html', dishes=dishes)
+
 
     return app
 

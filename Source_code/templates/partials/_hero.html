@@ -1,11 +1,38 @@
-<section id="home" class="hero relative">
-  <div class="absolute inset-0 bg-charcoal/60"></div>
-  <div class="relative container mx-auto px-4 py-24 md:py-32 text-center">
-    <h1 class="text-4xl md:text-6xl font-semibold text-ivory tracking-tight">Where Taste Meets Elegance</h1>
-    <p class="mt-4 text-ivory/80 max-w-2xl mx-auto">Modern Indian & Continental cuisine, crafted with seasonal ingredients in a luxe setting.</p>
-    <div class="mt-8 flex items-center justify-center gap-3">
-      <a href="#menu" class="btn btn-gold">Explore Menu</a>
-      <a href="#event-reservation" class="btn btn-outline">Reserve an Event</a>
+<section id="home" class="hero relative text-ivory">
+  <!-- 🖼️ Background Image with Overlay -->
+  <div class="absolute inset-0">
+    <img 
+      src="https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1920&auto=format&fit=crop" 
+      alt="Soviare Fine Dining Restaurant" 
+      class="w-full h-full object-cover brightness-[0.35] contrast-125">
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-charcoal/95"></div>
+  </div>
+
+  <!-- 🧭 Content Wrapper -->
+  <div class="relative z-10 container max-w-5xl mx-auto text-center px-6 py-40 md:py-52">
+
+    <!-- 🏛️ Heading -->
+    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-gold drop-shadow-lg tracking-wide">
+      Welcome to <span class="text-ivory">Soviare</span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-ivory/80 mb-10 max-w-2xl mx-auto leading-relaxed">
+      A fine dining experience that blends artistry, flavor, and ambiance into an unforgettable culinary journey.
+    </p>
+
+    <!-- ✨ Call to Actions -->
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+      <a href="#menu" class="btn btn-gold text-charcoal text-lg px-6 py-3 shadow-gold/30">
+        <i class="fa-solid fa-utensils mr-2"></i> Explore Menu
+      </a>
+      <a href="#private-rooms" class="btn btn-outline text-lg px-6 py-3">
+        <i class="fa-solid fa-door-open mr-2"></i> Book a Private Room
+      </a>
     </div>
+  </div>
+
+  <!-- 🌟 Floating Accent Element -->
+  <div class="absolute bottom-6 right-6 text-gold/40 text-6xl animate-pulse">
+    <i class="fa-solid fa-star"></i>
   </div>
 </section>
