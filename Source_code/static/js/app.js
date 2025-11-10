@@ -13,6 +13,20 @@
   el.classList.toggle('open', open);
 };
 
+// Ensure dropdown trigger works on click + prevents page-wide close when clicking inside
+document.querySelectorAll('[data-dropdown]').forEach(dd => {
+  const trigger = dd.querySelector('[data-dropdown-trigger]');
+  if (!trigger) return;
+  trigger.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    dd.classList.toggle('open');
+  });
+  // prevent clicks inside the dropdown from closing it (optional)
+  dd.querySelector('.dropdown-menu')?.addEventListener('click', (e) => e.stopPropagation());
+});
+
+
   // Hover + click support
   document.querySelectorAll('[data-dropdown]').forEach(dd=>{
     const trigger = dd.querySelector('[data-dropdown-trigger]');
@@ -331,6 +345,9 @@ function resetAll(){
     }
   });
 })();
+
+
+
 
 /* =====================================================
  🔄 RESTORE PENDING ACTIONS AFTER LOGIN

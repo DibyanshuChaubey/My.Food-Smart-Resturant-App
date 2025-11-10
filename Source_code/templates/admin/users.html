@@ -2,31 +2,64 @@
 {% block title %}Users — Admin{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto p-6">
-  <h2 class="text-2xl font-bold mb-4">Users</h2>
-
-  <div class="space-y-3">
-    {% for u in users %}
-    <div class="flex items-center justify-between bg-white p-3 rounded shadow">
-      <div>
-        <div class="font-semibold">{{ u.name or "—" }} <span class="text-sm text-gray-500">({{ u.email }})</span></div>
-        <div class="text-xs text-gray-500">Role: <strong>{{ u.role }}</strong> • Joined: {{ u.created_at.strftime("%Y-%m-%d") }}</div>
-      </div>
-      <div class="flex items-center gap-2">
-        {% if u.role != 'admin' %}
-        <form method="post" action="{{ url_for('admin.promote_user', user_id=u.id) }}">
-          <button class="px-3 py-1 bg-amber-600 text-white rounded">Promote</button>
-        </form>
-        {% else %}
-        <form method="post" action="{{ url_for('admin.demote_user', user_id=u.id) }}">
-          <button class="px-3 py-1 bg-gray-200 text-gray-800 rounded">Demote</button>
-        </form>
-        {% endif %}
-      </div>
+<section class="min-h-screen bg-[#fdfcf9] text-gray-900 py-16 px-6">
+  <div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-3xl font-bold text-amber-700 flex items-center gap-3">
+        <i class="fa-solid fa-users text-amber-600"></i>
+        Users
+      </h2>
+      <a href="{{ url_for('admin.dashboard') }}" class="text-sm text-amber-600 hover:text-amber-500 underline">
+        ← Back to Dashboard
+      </a>
     </div>
-    {% else %}
-    <div class="text-gray-500 italic">No users found.</div>
-    {% endfor %}
+
+    <!-- Users List -->
+    <div class="space-y-4">
+      {% for u in users %}
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white border border-amber-100 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-amber-200 transition">
+        <!-- User Info -->
+        <div>
+          <div class="font-semibold text-lg text-amber-800">
+            {{ u.name or "—" }}
+            <span class="text-sm text-gray-500">({{ u.email }})</span>
+          </div>
+          <div class="text-sm text-gray-600 mt-1">
+            Role:
+            {% if u.role == 'admin' %}
+              <span class="text-amber-700 font-semibold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">Admin</span>
+            {% else %}
+              <span class="text-gray-700 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-md">Customer</span>
+            {% endif %}
+            • Joined:
+            <span class="text-gray-500">{{ u.created_at.strftime("%Y-%m-%d") }}</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 mt-3 sm:mt-0">
+          {% if u.role != 'admin' %}
+          <form method="post" action="{{ url_for('admin.promote_user', user_id=u.id) }}">
+            <button class="px-4 py-1.5 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-500 transition">
+              Promote
+            </button>
+          </form>
+          {% else %}
+          <form method="post" action="{{ url_for('admin.demote_user', user_id=u.id) }}">
+            <button class="px-4 py-1.5 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition">
+              Demote
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <div class="text-gray-500 italic text-center mt-10">
+        No users found.
+      </div>
+      {% endfor %}
+    </div>
   </div>
-</div>
+</section>
 {% endblock %}

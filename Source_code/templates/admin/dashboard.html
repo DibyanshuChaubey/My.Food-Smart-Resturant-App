@@ -2,35 +2,80 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+<section class="min-h-screen bg-[#fdfcf9] text-gray-900 py-16 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex items-center justify-between mb-10">
+      <h1 class="text-3xl font-bold text-amber-700 tracking-wide flex items-center gap-3">
+        <i class="fa-solid fa-chart-line text-amber-600"></i>
+        Admin Dashboard
+      </h1>
+      <a href="{{ url_for('home') }}" class="text-sm text-amber-600 hover:text-amber-500 underline">
+        ← Return to Website
+      </a>
+    </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <div class="p-4 bg-white rounded shadow">
-      <div class="text-sm text-gray-500">Users</div>
-      <div class="text-2xl font-semibold">{{ users_count }}</div>
-      <a href="{{ url_for('admin.users_list') }}" class="text-sm text-amber-600 mt-2 inline-block">Manage users →</a>
+    <!-- 🔹 Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      
+      <!-- Users -->
+      <div class="p-5 bg-white border border-amber-100 rounded-xl shadow-md hover:shadow-lg hover:border-amber-200 transition">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-sm text-gray-500">Users</div>
+          <i class="fa-solid fa-users text-amber-600 text-lg"></i>
+        </div>
+        <div class="text-3xl font-bold text-amber-700 mb-2">{{ users_count }}</div>
+        <a href="{{ url_for('admin.users_list') }}" class="text-sm text-amber-600 hover:text-amber-500 transition">
+          Manage users →
+        </a>
+      </div>
+
+      <!-- Orders -->
+      <div class="p-5 bg-white border border-amber-100 rounded-xl shadow-md hover:shadow-lg hover:border-amber-200 transition">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-sm text-gray-500">Orders</div>
+          <i class="fa-solid fa-box text-amber-600 text-lg"></i>
+        </div>
+        <div class="text-3xl font-bold text-amber-700 mb-2">{{ orders_count }}</div>
+        <a href="{{ url_for('admin.orders_list') }}" class="text-sm text-amber-600 hover:text-amber-500 transition">
+          View orders →
+        </a>
+      </div>
+
+      <!-- Private Rooms -->
+      <div class="p-5 bg-white border border-amber-100 rounded-xl shadow-md hover:shadow-lg hover:border-amber-200 transition">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-sm text-gray-500">Private Rooms</div>
+          <i class="fa-solid fa-door-closed text-amber-600 text-lg"></i>
+        </div>
+        <div class="text-3xl font-bold text-amber-700 mb-2">{{ rooms_count }}</div>
+        <a href="{{ url_for('admin.rooms_list') }}" class="text-sm text-amber-600 hover:text-amber-500 transition">
+          View rooms →
+        </a>
+      </div>
+
+      <!-- Events -->
+      <div class="p-5 bg-white border border-amber-100 rounded-xl shadow-md hover:shadow-lg hover:border-amber-200 transition">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-sm text-gray-500">Events</div>
+          <i class="fa-solid fa-calendar-star text-amber-600 text-lg"></i>
+        </div>
+        <div class="text-3xl font-bold text-amber-700 mb-2">{{ events_count }}</div>
+        <a href="{{ url_for('admin.events_list') }}" class="text-sm text-amber-600 hover:text-amber-500 transition">
+          View events →
+        </a>
+      </div>
     </div>
-    <div class="p-4 bg-white rounded shadow">
-      <div class="text-sm text-gray-500">Orders</div>
-      <div class="text-2xl font-semibold">{{ orders_count }}</div>
-      <a href="{{ url_for('admin.orders_list') }}" class="text-sm text-amber-600 mt-2 inline-block">View orders →</a>
-    </div>
-    <div class="p-4 bg-white rounded shadow">
-      <div class="text-sm text-gray-500">Private rooms</div>
-      <div class="text-2xl font-semibold">{{ rooms_count }}</div>
-      <a href="{{ url_for('admin.rooms_list') }}" class="text-sm text-amber-600 mt-2 inline-block">View rooms →</a>
-    </div>
-    <div class="p-4 bg-white rounded shadow">
-      <div class="text-sm text-gray-500">Events</div>
-      <div class="text-2xl font-semibold">{{ events_count }}</div>
-      <a href="{{ url_for('admin.events_list') }}" class="text-sm text-amber-600 mt-2 inline-block">View events →</a>
+
+    <!-- 📊 Overview / Description Box -->
+    <div class="bg-white border border-amber-100 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+      <h2 class="text-xl font-semibold text-amber-700 mb-3 flex items-center gap-2">
+        <i class="fa-solid fa-chart-pie text-amber-600"></i> Quick Overview
+      </h2>
+      <p class="text-gray-700 text-sm leading-relaxed">
+        Welcome back, <span class="text-amber-700 font-medium">{{ session['email'] }}</span>.<br>
+        Use the cards above to monitor users, manage orders, private rooms, and events effortlessly.
+      </p>
     </div>
   </div>
-  <a href="{{ url_for('home') }}" class="text-sm text-amber-500 hover:text-amber-400 underline">
-← Return to Website
-</a>
-
-</div>
-
+</section>
 {% endblock %}

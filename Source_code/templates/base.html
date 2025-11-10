@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
 
-<body class="bg-[#0f0f0f] text-[#f5f3eb] font-sans tracking-wide">
+<body class="bg-[#0f0f0f] text-[#f5f3eb] font-sans tracking-wide" data-auth="{{ 'true' if is_authenticated else 'false' }}">
   {% include "partials/_navbar.html" %}
   <main class="pt-[72px]">{% block content %}{% endblock %}</main>
   {% include "partials/_footer.html" %}

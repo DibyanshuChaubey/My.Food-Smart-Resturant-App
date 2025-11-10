@@ -1,305 +1,216 @@
+/* =========================================================
+   PHASE 1 — CORE COLOR SYSTEM + GLOBAL LAYOUT STRUCTURE
+   ========================================================= */
 :root {
-  --charcoal: #0b0d0f;
-  --charcoal-2: #111418;
-  --ivory: #f5f3eb;
-  --ivory-soft: rgba(245,243,235,0.8);
-  --gold: #d4a44b;
-  --gold-2: #b88938;
-  --accent: #ff6a3d;
-  --border-light: rgba(255,255,255,0.08);
+  /* Core brand palette */
+  --bg-dark: #0b0d0f;
+  --bg-darker: #101316;
+  --bg-card: #161a1e;
+  --text-light: #f6f5ef;
+  --text-soft: rgba(246,245,239,0.75);
+  --text-muted: rgba(246,245,239,0.55);
+  --accent-gold: #d4a44b;
+  --accent-gold-deep: #b88938;
+  --accent-orange: #ff6a3d;
+  --border-soft: rgba(255,255,255,0.08);
+
+  --section-padding: 5rem;
+  --radius-lg: 14px;
+  --shadow-card: 0 8px 28px rgba(0,0,0,0.45);
 }
 
-/* ========== GLOBAL ========== */
+/* ===== Global Layout ===== */
 body {
-  background-color: var(--charcoal);
-  color: var(--ivory);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
   font-family: "Inter", sans-serif;
+  margin: 0;
   line-height: 1.6;
 }
 
+section {
+  padding: var(--section-padding) 0;
+  background: var(--bg-dark);
+}
+
 .container {
+  width: 90%;
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
 }
 
-/* ========== BACKGROUND / TEXT HELPERS ========== */
-.bg-charcoal { background-color: var(--charcoal); }
-.bg-charcoal-2 { background-color: var(--charcoal-2); }
-.text-ivory { color: var(--ivory); }
-.text-gold { color: var(--gold); }
-.text-muted { color: rgba(245,243,235,0.6); }
-.border-gold\/10 { border-color: rgba(212,164,75,.1); }
-.shadow-gold\/30 { box-shadow: 0 8px 22px rgba(212,164,75,.3); }
-
-/* ========== HERO SECTION ========== */
-.hero {
-  background: linear-gradient(rgba(11,13,15,.55), rgba(11,13,15,.85)),
-    url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1920&auto=format&fit=crop") center/cover no-repeat;
-  color: var(--ivory);
-  padding: 6rem 1rem;
-  text-align: center;
+/* ===== Text ===== */
+h1, h2, h3, h4, h5 {
+  color: var(--text-light);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.3px;
 }
 
-/* ========== BUTTONS ========== */
+p {
+  color: var(--text-soft);
+  margin: 0.25rem 0 1rem;
+  line-height: 1.7;
+}
+
+/* ===== Buttons ===== */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.65rem 1.2rem;
-  border-radius: 0.75rem;
   font-weight: 600;
-  transition: 0.25s ease;
-  border: 1px solid transparent;
+  border-radius: 10px;
+  border: none;
   cursor: pointer;
+  padding: 0.7rem 1.4rem;
+  transition: all 0.25s ease;
 }
-.btn:hover { transform: translateY(-1px); }
 
 .btn-gold {
-  background: linear-gradient(to bottom right, var(--gold), var(--gold-2));
-  color: var(--charcoal);
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-deep));
+  color: var(--bg-dark);
 }
 .btn-gold:hover { filter: brightness(1.1); }
 
-.btn-outline {
-  color: var(--ivory);
-  border-color: var(--gold);
-}
-.btn-outline:hover {
-  background: rgba(212,164,75,0.1);
-}
-
 .btn-accent {
-  background-color: var(--accent);
+  background: var(--accent-orange);
   color: #fff;
-  font-weight: 600;
-  border-radius: 10px;
-  padding: 0.6rem 1.4rem;
-  transition: background 0.3s ease, transform 0.15s ease;
 }
 .btn-accent:hover {
-  background-color: #e84a1f;
-  transform: scale(1.03);
-}
-.btn-icon {
-  color: var(--ivory);
-  background: rgba(255,255,255,0.06);
+  background: #e14a1c;
 }
 
-/* ========== NAVBAR ========== */
-.nav-link {
-  color: rgba(246,246,243,0.85);
-  padding: 0.5rem 0.8rem;
-  border-radius: 0.5rem;
-  transition: 0.25s ease;
-}
-.nav-link:hover {
-  color: var(--gold);
-  background: rgba(212,164,75,0.08);
+/* ===== Cards ===== */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  transition: all 0.25s ease;
 }
 
-/* Dropdown (hover + click friendly) */
-.dropdown-menu {
-  position: absolute;
-  top: 110%;
-  left: 0;
-  min-width: 220px;
-  background: var(--charcoal-2);
-  border: 1px solid var(--border-light);
-  border-radius: 0.75rem;
-  padding: 0.4rem;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(6px);
-  transition: all 0.2s ease-in-out;
-  z-index: 40;
-}
-.dropdown.open .dropdown-menu,
-.dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-.dropdown .dropdown-item {
-  display: block;
-  padding: 0.6rem 0.8rem;
-  border-radius: 0.6rem;
-  color: rgba(246,246,243,0.85);
-}
-.dropdown .dropdown-item:hover {
-  background: rgba(212,164,75,0.08);
-  color: var(--gold);
-}
-
-/* ========== MOBILE MENU ========== */
-.mobile-drawer {
-  background: var(--charcoal-2);
-  border-top: 1px solid var(--border-light);
-  padding: 0.8rem 1rem;
-}
-.mobile-link {
-  display: block;
-  padding: 0.6rem;
-  border-radius: 0.5rem;
-  color: rgba(246,246,243,0.9);
-}
-.mobile-link:hover {
-  background: rgba(212,164,75,0.08);
-  color: var(--gold);
-}
-
-/* ========== SECTION HEADINGS ========== */
-.section {
-  padding: 64px 0;
-  background: var(--charcoal);
-}
-.section-head {
-  text-align: center;
-  margin-bottom: 28px;
-}
-.section-title {
-  color: var(--ivory);
-  font-weight: 700;
-  font-size: 1.8rem;
-}
-.section-sub {
-  color: rgba(246,246,243,0.65);
-}
-
-/* ========== CARDS & PANELS ========== */
-.card, form, .dish-card {
-  background: var(--charcoal-2);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-  color: var(--ivory);
-  transition: all 0.3s ease;
-}
 .card:hover {
   transform: translateY(-3px);
   border-color: rgba(212,164,75,0.2);
 }
 
-.card-img {
+/* ===== Input Fields ===== */
+input, textarea, select {
   width: 100%;
-  height: 190px;
-  object-fit: cover;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-.card-body { padding: 1rem; }
-.card-title { color: var(--ivory); font-weight: 600; }
-.card-sub { color: rgba(246,246,243,0.65); font-size: 0.95rem; }
-
-.panel {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212,164,75,0.08);
-  border-radius: 1rem;
-  padding: 1rem;
-}
-.panel-title {
-  color: var(--ivory);
-  font-weight: 600;
-  margin-bottom: 0.6rem;
-}
-
-/* ========== INPUTS & FORMS ========== */
-.input, input, textarea, select {
-  width: 100%;
-  padding: 0.7rem 0.9rem;
-  border-radius: 0.7rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(212,164,75,0.14);
-  color: var(--ivory);
-  transition: all 0.2s ease;
-}
-.input::placeholder,
-input::placeholder,
-textarea::placeholder {
-  color: rgba(246,246,243,0.45);
-}
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(212,164,75,0.2);
-}
-.label {
-  color: rgba(246,246,243,0.8);
-  margin-bottom: 0.3rem;
-  display: block;
-}
-
-/* ========== MENU CHIPS ========== */
-.chip {
-  padding: 0.45rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid rgba(212,164,75,0.22);
-  color: rgba(246,246,243,0.85);
-}
-.chip:hover {
-  background: rgba(212,164,75,0.08);
-  color: var(--gold);
-}
-
-/* ========== PRICE & QUANTITY ========== */
-.price {
-  color: var(--gold);
-  font-weight: 700;
-}
-.qty {
-  width: 70px;
-  text-align: center;
-  background: var(--charcoal);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--ivory);
-}
-
-/* ========== LINKS & HEADERS ========== */
-a {
-  color: var(--gold);
-  transition: color 0.3s ease;
-}
-a:hover {
-  color: #ffb347;
-}
-h1, h2, h3, h4 {
-  color: #fdfaf3;
-  font-weight: 700;
-}
-
-/* ========== FOOTER ========== */
-footer {
-  background: var(--charcoal-2);
-  border-top: 1px solid var(--border-light);
-  color: var(--ivory-soft);
-  padding: 2rem 0;
-  text-align: center;
-}
-footer a:hover {
-  color: var(--gold);
-}
-
-/* ========== ANIMATIONS ========== */
-.dropdown-menu {
-  transition: all 0.25s ease-in-out;
-  opacity: 0;
-  transform: translateY(-6px);
-}
-.dropdown.open .dropdown-menu {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ========== SCROLLBAR (DARK STYLE) ========== */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--charcoal);
-}
-::-webkit-scrollbar-thumb {
-  background-color: var(--gold-2);
+  background: var(--bg-darker);
+  color: var(--text-light);
+  border: 1px solid var(--border-soft);
   border-radius: 10px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--gold);
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(212,164,75,0.2);
+  outline: none;
+}
+/* =========================================================
+   PHASE 2 — SECTION CONTEXTS (LIGHT / DARK / ACCENT)
+   ========================================================= */
+
+.section-dark {
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+
+.section-mid {
+  background: var(--bg-darker);
+  color: var(--text-soft);
+}
+
+.section-card {
+  background: var(--bg-card);
+  color: var(--text-light);
+}
+
+.section-light {
+  background: #f9f8f4;
+  color: #222;
+}
+
+.section-light h1, .section-light h2, .section-light h3 {
+  color: #1a1a1a;
+}
+
+.section-light p {
+  color: #333;
+}
+
+/* =========================================================
+   PHASE 3 — STRUCTURE & SPACING
+   ========================================================= */
+
+.section-head {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-head h2 {
+  font-size: 2rem;
+  color: var(--accent-gold);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  section { padding: 3rem 1rem; }
+}
+/* =========================================================
+   PHASE 4 — PER-SECTION STYLES
+   ========================================================= */
+
+/* HERO */
+.hero {
+  background: linear-gradient(rgba(11,13,15,.55),rgba(11,13,15,.75)),
+    url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1920") center/cover no-repeat;
+  color: var(--text-light);
+  text-align: center;
+  padding: 7rem 1rem;
+}
+
+/* MENU GRID */
+.menu-section .card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+/* CONTACT FORM */
+.contact-section input, .contact-section textarea {
+  background: var(--bg-card);
+  border-color: rgba(255,255,255,0.1);
+}
+.contact-section .btn {
+  margin-top: 0.5rem;
 }

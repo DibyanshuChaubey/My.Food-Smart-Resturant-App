@@ -1,46 +1,64 @@
-<section id="order" class="section container mx-auto px-4 bg-[#fdfdfb] py-16">
-  <div class="section-head">
-    <h2 class="section-title">Your Order</h2>
-    <p class="section-sub">Review your cart and choose delivery method.</p>
+<section id="order" class="section container mx-auto px-4 bg-charcoal text-ivory py-16">
+  <div class="section-head text-center mb-10">
+    <h2 class="text-3xl font-bold text-gold mb-2">Your Order</h2>
+    <p class="text-ivory/70">Review your cart and choose your delivery method.</p>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-6">
-    <!-- Summary -->
-    <div class="panel">
-      <h3 class="panel-title">Cart Summary</h3>
-      <div id="order-summary" class="space-y-3 text-ivory/80"></div>
-      <div id="order-total" class="mt-4 font-semibold text-gold"></div>
+  <div class="grid md:grid-cols-2 gap-8">
+
+    <!-- 🧾 Cart Summary Panel -->
+    <div class="panel bg-charcoal-2 border border-gold/10 rounded-xl p-6 shadow-lg shadow-gold/10 hover:border-gold/25 transition">
+      <h3 class="panel-title text-xl font-semibold text-gold mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-cart-shopping text-gold/90"></i> Cart Summary
+      </h3>
+
+      <div id="order-summary" class="space-y-4 text-ivory/85 text-sm">
+        <!-- JS will populate cart items here -->
+        <p class="text-ivory/60 italic">Your cart is currently empty.</p>
+      </div>
+
+      <div id="order-total" class="mt-6 text-right text-lg font-semibold text-gold border-t border-gold/20 pt-3">
+        Total: $0.00
+      </div>
     </div>
 
-    <!-- Checkout -->
-    <div class="panel">
-      <h3 class="panel-title">Checkout</h3>
-      <form id="reservationForm" class="space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <input id="name" type="text" placeholder="Full Name" class="input" required>
-          <input id="email" type="email" placeholder="Email" class="input" required>
-          <input id="phone" type="tel" placeholder="Phone" class="input" required>
+    <!-- 💳 Checkout Form Panel -->
+    <div class="panel bg-charcoal-2 border border-gold/10 rounded-xl p-6 shadow-lg shadow-gold/10 hover:border-gold/25 transition">
+      <h3 class="panel-title text-xl font-semibold text-gold mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-receipt text-gold/90"></i> Checkout
+      </h3>
+
+      <form id="reservationForm" class="space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input id="name" type="text" placeholder="Full Name" class="input bg-charcoal border border-gold/20 focus:border-gold focus:ring-1 focus:ring-gold" required>
+          <input id="email" type="email" placeholder="Email" class="input bg-charcoal border border-gold/20 focus:border-gold focus:ring-1 focus:ring-gold" required>
+          <input id="phone" type="tel" placeholder="Phone" class="input bg-charcoal border border-gold/20 focus:border-gold focus:ring-1 focus:ring-gold" required>
         </div>
 
         <div>
-          <label class="label">Delivery Method</label>
-          <select id="delivery-method" class="input">
+          <label class="label font-medium text-ivory/80 mb-1">Delivery Method</label>
+          <select id="delivery-method" class="input bg-charcoal border border-gold/20 focus:border-gold focus:ring-1 focus:ring-gold">
             <option value="pickup">Pickup</option>
             <option value="delivery">Delivery</option>
           </select>
         </div>
 
         <div id="address-wrapper" class="hidden">
-          <input id="address" type="text" placeholder="Delivery Address" class="input">
+          <input id="address" type="text" placeholder="Delivery Address" class="input bg-charcoal border border-gold/20 focus:border-gold focus:ring-1 focus:ring-gold">
         </div>
 
-        <textarea id="specialRequests" placeholder="Any special requests?" class="input h-28"></textarea>
+        <textarea id="specialRequests" placeholder="Any special requests?" class="input bg-charcoal border border-gold/20 focus:border-gold focus:ring-1 focus:ring-gold h-28"></textarea>
 
-        <div class="flex items-center gap-3">
-          <button type="submit" class="btn btn-gold">Place Order</button>
-          <button type="button" id="clearCart" class="btn btn-outline">Clear</button>
+        <div class="flex items-center gap-4 pt-2">
+          <button type="submit" class="btn btn-gold px-5 py-2 font-semibold shadow-md hover:brightness-110 transition">
+            <i class="fa-solid fa-paper-plane mr-2"></i> Place Order
+          </button>
+          <button type="button" id="clearCart" class="btn btn-outline border-gold/40 text-ivory/80 hover:bg-gold/10 px-5 py-2 font-semibold transition">
+            <i class="fa-solid fa-trash-can mr-2"></i> Clear
+          </button>
         </div>
       </form>
     </div>
+
   </div>
 </section>
