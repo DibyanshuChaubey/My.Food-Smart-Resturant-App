@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-4">{{ title }}</h2>
+
+  <div class="space-y-3">
+    {% for item in items %}
+      <div class="bg-white p-4 rounded shadow">
+        {% if kind == 'orders' %}
+          <div class="flex justify-between">
+            <div>
+              <div class="font-semibold">Order #{{ item.id }} — {{ item.status }}</div>
+              <div class="text-sm text-gray-500">Total: ${{ '%.2f'|format(item.total) }} • Created: {{ item.created_at.strftime("%Y-%m-%d %H:%M") }}</div>
+              <div class="text-sm text-gray-700 mt-2">Items: {{ item.items }}</div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <form method="post" action="{{ url_for('admin.change_order_status', order_id=item.id) }}">
+                <select name="status" class="border px-2 py-1 rounded">
+                  <option value="Pending" {% if item.status=='Pending' %}selected{% endif %}>Pending</option>
+                  <option value="Preparing" {% if item.status=='Preparing' %}selected{% endif %}>Preparing</option>
+                  <option value="Completed" {% if item.status=='Completed' %}selected{% endif %}>Completed</option>
+                </select>
+                <button class="mt-2 px-3 py-1 bg-amber-600 text-white rounded">Update</button>
+              </form>
+            </div>
+          </div>
+        {% elif kind == 'rooms' %}
+          <div class="font-semibold">{{ item.name }} • {{ item.date }} {{ item.time }}</div>
+          <div class="text-sm text-gray-500">{{ item.email }} • Booked: {{ item.created_at.strftime("%Y-%m-%d") }}</div>
+          <div class="mt-2 text-sm">{{ item.message }}</div>
+        {% elif kind == 'events' %}
+          <div class="font-semibold">{{ item.event_type }} • Guests: {{ item.guests }}</div>
+          <div class="text-sm text-gray-500">{{ item.email }} • Date: {{ item.date }}</div>
+          <div class="mt-2 text-sm">{{ item.message }}</div>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="text-gray-500 italic">No records found.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

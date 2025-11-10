@@ -6,8 +6,12 @@
 /* ============== UI: Navbar dropdowns & mobile drawer ============== */
 (function(){
   const toggleDropdown = (el, open) => {
-    el.classList.toggle('open', open);
-  };
+  const menu = el.querySelector('.dropdown-menu');
+  if (menu) {
+    menu.classList.toggle('hidden', !open);
+  }
+  el.classList.toggle('open', open);
+};
 
   // Hover + click support
   document.querySelectorAll('[data-dropdown]').forEach(dd=>{
@@ -31,9 +35,13 @@
   });
 
   // Close any open dropdown when clicking elsewhere
+
+
   document.addEventListener('click', ()=> {
     document.querySelectorAll('.dropdown.open').forEach(d=>d.classList.remove('open'));
   });
+
+
 
   // ================================
   // Mobile Drawer Menu Toggle

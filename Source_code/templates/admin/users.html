@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Users — Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-4">Users</h2>
+
+  <div class="space-y-3">
+    {% for u in users %}
+    <div class="flex items-center justify-between bg-white p-3 rounded shadow">
+      <div>
+        <div class="font-semibold">{{ u.name or "—" }} <span class="text-sm text-gray-500">({{ u.email }})</span></div>
+        <div class="text-xs text-gray-500">Role: <strong>{{ u.role }}</strong> • Joined: {{ u.created_at.strftime("%Y-%m-%d") }}</div>
+      </div>
+      <div class="flex items-center gap-2">
+        {% if u.role != 'admin' %}
+        <form method="post" action="{{ url_for('admin.promote_user', user_id=u.id) }}">
+          <button class="px-3 py-1 bg-amber-600 text-white rounded">Promote</button>
+        </form>
+        {% else %}
+        <form method="post" action="{{ url_for('admin.demote_user', user_id=u.id) }}">
+          <button class="px-3 py-1 bg-gray-200 text-gray-800 rounded">Demote</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="text-gray-500 italic">No users found.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

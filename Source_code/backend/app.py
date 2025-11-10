@@ -55,7 +55,8 @@ def inject_auth_state():
     from flask import session
     return {
         "is_authenticated": bool(session.get("user_id")),
-        "user_email": session.get("email")
+        "user_email": session.get("email"),
+        "user_role": session.get("role")
     }
 
 

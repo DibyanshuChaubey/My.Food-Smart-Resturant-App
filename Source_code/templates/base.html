@@ -6,6 +6,13 @@
   <title>{% block title %}Soviare | Fine Dining{% endblock %}</title>
 
   <!-- Tailwind (Premium Config + Caching) -->
+  {% if session.get('role') == 'admin' %}
+  <a href="{{ url_for('admin.dashboard') }}" class="nav-link text-yellow-600 font-semibold">
+    Admin Dashboard
+  </a>
+{% endif %}
+
+
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
   <script>
     tailwind.config = {
@@ -26,7 +33,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
 
-<body class="bg-ivory text-ivory/90 antialiased">
+<body class="bg-[#0f0f0f] text-[#f5f3eb] font-sans tracking-wide">
   {% include "partials/_navbar.html" %}
   <main class="pt-[72px]">{% block content %}{% endblock %}</main>
   {% include "partials/_footer.html" %}
