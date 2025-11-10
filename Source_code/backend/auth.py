@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
-import requests  # ✅ add this (external library)
+import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User
 from flask_mail import Mail
@@ -7,11 +7,10 @@ import random
 import string
 import os
 
-
 auth_bp = Blueprint('auth', __name__)
 mail = Mail()
 
-# Temporary in-memory OTP store (for production, replace with Redis or DB)
+# Temporary in-memory OTP store (replace with Redis or DB in production)
 otp_store = {}
 
 # ====================================================
@@ -33,7 +32,8 @@ def register():
         user = User(name=name, email=email, password=password)
         db.session.add(user)
         db.session.commit()
-        flash("Registration successful! Please login.")
+
+        flash("✅ Registration successful! Please login to continue.")
         return redirect(url_for('auth.otp_login'))
 
     return render_template('register.html')
@@ -47,16 +47,25 @@ def otp_login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form.get('password')
+
         user = User.query.filter_by(email=email).first()
 
         # ✅ Password login
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['email'] = user.email
+            session['role'] = user.role
 
-            # Redirect user to pending page (if any)
+            flash(f"Welcome back, {user.name}! 🎉")
+
+            # ✅ Redirect based on role or pending URL
             next_url = session.pop('post_login_next', None)
-            return redirect(next_url or url_for('customer.customer_panel'))
+            if next_url:
+                return redirect(next_url)
+            elif user.role == 'admin':
+                return redirect(url_for('admin.dashboard'))
+            else:
+                return redirect(url_for('customer.customer_dashboard'))
 
         # ❌ Invalid credentials
         return render_template('otp_login.html', error="Invalid credentials. Please try again.")
@@ -70,11 +79,8 @@ def otp_login():
 
 
 # ====================================================
-# 🔹 SEND OTP (Render-safe)
+# 🔹 SEND OTP (via Brevo)
 # ====================================================
-
-
-
 @auth_bp.route('/send-otp', methods=['POST'])
 def send_otp():
     email = request.form.get('email')
@@ -90,12 +96,12 @@ def send_otp():
     # ✅ Brevo API setup
     api_key = os.getenv("BREVO_API_KEY")
     sender_email = os.getenv("MAIL_USERNAME", "dibyanshuchaubey727@gmail.com")
-    sender_name = os.getenv("MAIL_SENDER_NAME", "My.Foood App")
+    sender_name = os.getenv("MAIL_SENDER_NAME", "Soviare Restaurant")
 
     data = {
         "sender": {"name": sender_name, "email": sender_email},
         "to": [{"email": email}],
-        "subject": "Your OTP Code - Restaurant App",
+        "subject": "Your OTP Code - Soviare Restaurant",
         "htmlContent": f"""
             <div style='font-family: Arial, sans-serif; padding: 15px;'>
                 <h2>🔐 Your OTP Code</h2>
@@ -104,17 +110,13 @@ def send_otp():
                 <h1 style='color:#ff6600;'>{otp}</h1>
                 <p>This code is valid for 5 minutes.</p>
                 <hr>
-                <p>🍽️ Restaurant App — Bringing taste to your doorstep!</p>
+                <p>🍽️ Soviare — Bringing taste to your doorstep!</p>
             </div>
         """
     }
-    if api_key:
-        print("DEBUG: BREVO_API_KEY exists?", bool(api_key))
-        print("DEBUG: BREVO_API_KEY starts with:", str(api_key)[:10])
 
     try:
-
-        # ✅ Send email via Brevo
+        # ✅ Send email via Brevo API
         res = requests.post(
             "https://api.brevo.com/v3/smtp/email",
             headers={
@@ -125,13 +127,11 @@ def send_otp():
             json=data
         )
 
-        # ✅ Success
         if res.status_code == 201:
             print(f"✅ OTP email sent successfully to {email}")
             return jsonify({'success': True, 'message': '✅ OTP sent successfully! Please check your email.'}), 200
         else:
             print(f"⚠️ Brevo API error {res.status_code}: {res.text}")
-            # fallback to console OTP (in Render logs)
             print(f"🔄 Fallback OTP for {email}: {otp}")
             return jsonify({'success': True, 'message': '⚠️ Email failed, OTP logged in Render logs.'}), 200
 
@@ -141,14 +141,8 @@ def send_otp():
         return jsonify({'success': True, 'message': '⚠️ Network issue — OTP logged in Render logs.'}), 200
 
 
-
-
-
-
-
-
 # ====================================================
-# 🔹 VERIFY OTP (with smart redirect)
+# 🔹 VERIFY OTP (with role-based smart redirect)
 # ====================================================
 @auth_bp.route('/verify-otp', methods=['POST'])
 def verify_otp():
@@ -159,20 +153,22 @@ def verify_otp():
     valid = user and otp_store.get(email) == otp
 
     if valid:
+        # ✅ OTP success — setup session
         session['user_id'] = user.id
         session['email'] = user.email
+        session['role'] = user.role
         otp_store.pop(email, None)
-
-        next_url = session.pop('post_login_next', None) or session.pop('redirectAfterLogin', None)
-        redirect_url = next_url or url_for('customer.customer_panel')
 
         flash(f"Welcome back, {user.name}! 🎉")
 
-        # 🧠 Detect all possible JSON/AJAX requests
+        # ✅ Role-based redirect
+        redirect_url = url_for('admin.dashboard') if user.role == 'admin' else url_for('customer.customer_dashboard')
+
+        # ✅ JSON / AJAX Response Support
         if (
-            request.headers.get('X-Requested-With') == 'XMLHttpRequest' or
-            request.is_json or
-            request.accept_mimetypes.best == 'application/json'
+            request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+            or request.is_json
+            or request.accept_mimetypes.best == 'application/json'
         ):
             return jsonify({
                 'success': True,
@@ -184,16 +180,15 @@ def verify_otp():
 
     # ❌ Invalid OTP
     flash("❌ Invalid or expired OTP. Please try again.")
+
     if (
-        request.headers.get('X-Requested-With') == 'XMLHttpRequest' or
-        request.is_json or
-        request.accept_mimetypes.best == 'application/json'
+        request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        or request.is_json
+        or request.accept_mimetypes.best == 'application/json'
     ):
         return jsonify({'success': False, 'message': '❌ Invalid or expired OTP.'}), 400
 
     return redirect(url_for('auth.otp_login'))
-
-
 
 
 # ====================================================
@@ -203,4 +198,4 @@ def verify_otp():
 def logout():
     session.clear()
     flash("You have been logged out successfully.")
-    return redirect(url_for('home'))  # Redirect to index.html
+    return redirect(url_for('home'))
