@@ -1,103 +1,97 @@
 # backend/admin.py
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from werkzeug.security import check_password_hash
-from models import db, Order, PrivateRoom, Event, User
+from flask import Blueprint, render_template, session, redirect, url_for, flash, request, jsonify
+from functools import wraps
+from models import db, User, Order, PrivateRoom, Event  # adjust import path if necessary
+from werkzeug.security import generate_password_hash
 
-admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin', template_folder='../templates/admin')
 
-def is_admin_logged_in() -> bool:
-    return bool(session.get('admin'))
+def admin_required(f):
+    """Decorator: require an authenticated user with role == 'admin'."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('user_id') or session.get('role') != 'admin':
+            flash("Unauthorized: admin access required.", "danger")
+            # send user to login with next param
+            return redirect(url_for('auth.otp_login', next=request.path))
+        return f(*args, **kwargs)
+    return decorated
 
-# -------- Auth --------
-@admin_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    # If already logged in, go to dashboard
-    if is_admin_logged_in():
-        return redirect(url_for('admin.dashboard'))
-
-    if request.method == 'POST':
-        email = request.form.get('email', '').strip()
-        password = request.form.get('password', '')
-
-        # Look up admin user in DB
-        admin_user = User.query.filter_by(email=email, role='admin').first()
-
-        if admin_user and check_password_hash(admin_user.password, password):
-            session['admin'] = True
-            session['admin_email'] = admin_user.email
-            flash('Logged in as admin.', 'success')
-            return redirect(url_for('admin.dashboard'))
-
-        # If no DB admin matches, fail silentlyP
-        return render_template('admin_login.html', error="Invalid admin credentials.")
-
-    return render_template('admin_login.html')
-
-@admin_bp.route('/logout')
-def logout():
-    session.pop('admin', None)
-    session.pop('admin_email', None)
-    flash('You have been logged out.', 'info')
-    return redirect(url_for('admin.login'))
-
-# -------- Dashboard --------
+# ---- Admin dashboard ----
 @admin_bp.route('/dashboard')
+@admin_required
 def dashboard():
-    if not is_admin_logged_in():
-        return redirect(url_for('admin.login'))
+    # show quick counts
+    users_count = User.query.count()
+    orders_count = Order.query.count()
+    rooms_count = PrivateRoom.query.count()
+    events_count = Event.query.count()
+    return render_template('admin/dashboard.html',
+                           users_count=users_count,
+                           orders_count=orders_count,
+                           rooms_count=rooms_count,
+                           events_count=events_count)
 
+# ---- Users list / manage ----
+@admin_bp.route('/users')
+@admin_required
+def users_list():
+    users = User.query.order_by(User.created_at.desc()).all()
+    return render_template('admin/users.html', users=users)
+
+@admin_bp.route('/users/promote/<int:user_id>', methods=['POST'])
+@admin_required
+def promote_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.role = 'admin'
+    db.session.commit()
+    flash(f"{user.email} promoted to admin.", "success")
+    return redirect(url_for('admin.users_list'))
+
+@admin_bp.route('/users/demote/<int:user_id>', methods=['POST'])
+@admin_required
+def demote_user(user_id):
+    user = User.query.get_or_404(user_id)
+    # prevent demoting yourself accidentally
+    if user.id == session.get('user_id'):
+        flash("You cannot demote yourself.", "warning")
+        return redirect(url_for('admin.users_list'))
+    user.role = 'customer'
+    db.session.commit()
+    flash(f"{user.email} demoted to customer.", "success")
+    return redirect(url_for('admin.users_list'))
+
+# ---- Orders listing ----
+@admin_bp.route('/orders')
+@admin_required
+def orders_list():
     orders = Order.query.order_by(Order.created_at.desc()).all()
-    private_bookings = PrivateRoom.query.order_by(PrivateRoom.created_at.desc()).all()
-    event_bookings = Event.query.order_by(Event.created_at.desc()).all()
+    # for each order we can show minimal info; template will iterate
+    return render_template('admin/listing.html', title="Orders", items=orders, kind='orders')
 
-    # admin.html expects SQLAlchemy objects (not tuples)
-    return render_template(
-        'admin.html',
-        orders=orders,
-        private_bookings=private_bookings,
-        event_bookings=event_bookings
-    )
+# ---- Private rooms listing ----
+@admin_bp.route('/rooms')
+@admin_required
+def rooms_list():
+    rooms = PrivateRoom.query.order_by(PrivateRoom.created_at.desc()).all()
+    return render_template('admin/listing.html', title="Private Rooms", items=rooms, kind='rooms')
 
-# -------- Order Actions --------
-@admin_bp.route('/order/<int:id>')
-def order_detail(id):
-    if not is_admin_logged_in():
-        return redirect(url_for('admin.login'))
-    order = Order.query.get_or_404(id)
-    return render_template('order_detail.html', order=order)
+# ---- Events listing ----
+@admin_bp.route('/events')
+@admin_required
+def events_list():
+    events = Event.query.order_by(Event.created_at.desc()).all()
+    return render_template('admin/listing.html', title="Events", items=events, kind='events')
 
-@admin_bp.route('/order/<int:id>/complete', methods=['POST'])
-def complete_order(id):
-    if not is_admin_logged_in():
-        return redirect(url_for('admin.login'))
-    order = Order.query.get_or_404(id)
-    order.status = 'Completed'
+# ---- API helper to toggle order status (example) ----
+@admin_bp.route('/orders/<int:order_id>/status', methods=['POST'])
+@admin_required
+def change_order_status(order_id):
+    new_status = request.form.get('status')
+    order = Order.query.get_or_404(order_id)
+    order.status = new_status
     db.session.commit()
-    flash(f'Order #{id} marked as Completed.', 'success')
-    return redirect(url_for('admin.dashboard'))
-
-@admin_bp.route('/order/<int:id>/delete', methods=['POST'])
-def delete_order(id):
-    if not is_admin_logged_in():
-        return redirect(url_for('admin.login'))
-    order = Order.query.get_or_404(id)
-    db.session.delete(order)
-    db.session.commit()
-    flash(f'Order #{id} deleted.', 'warning')
-    return redirect(url_for('admin.dashboard'))
-
-# -------- Private Room Details --------
-@admin_bp.route('/private/<int:id>')
-def private_detail(id):
-    if not is_admin_logged_in():
-        return redirect(url_for('admin.login'))
-    booking = PrivateRoom.query.get_or_404(id)
-    return render_template('private_detail.html', booking=booking)
-
-# -------- Event Details --------
-@admin_bp.route('/event/<int:id>')
-def event_detail(id):
-    if not is_admin_logged_in():
-        return redirect(url_for('admin.login'))
-    event = Event.query.get_or_404(id)
-    return render_template('event_detail.html', event=event)
+    if request.is_json:
+        return jsonify({'success': True, 'status': new_status})
+    flash("Order status updated.", "success")
+    return redirect(url_for('admin.orders_list'))

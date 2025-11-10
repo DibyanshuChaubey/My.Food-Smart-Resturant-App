@@ -1,7 +1,9 @@
 <header class="fixed inset-x-0 top-0 z-50 bg-charcoal/95 backdrop-blur-md shadow-sm border-b border-gold/10">
   <div class="container mx-auto px-4 h-[72px] flex items-center justify-between">
+
     <!-- Brand -->
-    <a href="/" class="flex items-center gap-3 group">
+    <a href="{% if user_role == 'admin' %}{{ url_for('admin.dashboard') }}{% elif is_authenticated %}{{ url_for('customer.customer_dashboard') }}{% else %}/{% endif %}"
+       class="flex items-center gap-3 group">
       <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-gold to-gold/70 grid place-items-center shadow-gold/30 shadow-md">
         <i class="fa-solid fa-utensils text-charcoal text-lg"></i>
       </div>
@@ -29,25 +31,43 @@
 
     <!-- Actions -->
     <div class="flex items-center gap-3">
+
       {% if is_authenticated %}
-      <!-- User dropdown -->
-      <div class="dropdown relative" data-dropdown>
-        <button class="btn btn-gold flex items-center gap-2" data-dropdown-trigger>
-          <span class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-ivory/95 text-charcoal font-bold">
-            {{ user_email[0]|upper }}
-          </span>
-          <span class="max-w-[140px] truncate hidden sm:block">
-            {{ user_email.split('@')[0] | capitalize }}
-          </span>
-          <i class="fa-solid fa-chevron-down text-[10px]"></i>
-        </button>
-        <div class="dropdown-menu right-0">
-          <a href="/customer/dashboard" class="dropdown-item"><i class="fa-regular fa-user"></i> My Dashboard</a>
-          <a href="/customer/orders" class="dropdown-item"><i class="fa-regular fa-clipboard"></i> My Orders</a>
-          <a href="/logout" class="dropdown-item text-red-400 hover:text-red-300"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-        </div>
-      </div>
+      <!-- Logged-in Dropdown -->
+     <div class="relative dropdown" data-dropdown>
+  <button 
+    class="flex items-center gap-2 px-3 py-2 bg-amber-600 rounded-xl text-white font-semibold"
+    data-dropdown-trigger
+  >
+    <span class="rounded-full bg-amber-800 px-2 py-1 text-sm font-bold">
+      {{ user_email[0]|upper }}
+    </span>
+    {% if user_role == 'admin' %}
+      Admin
+    {% else %}
+      {{ user_email.split('@')[0] }}
+    {% endif %}
+    <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div 
+    class="absolute right-0 mt-2 w-48 bg-zinc-900 text-white rounded-xl shadow-lg hidden dropdown-menu"
+  >
+    {% if user_role == 'admin' %}
+      <a href="{{ url_for('admin.dashboard') }}" class="block px-4 py-2 hover:bg-zinc-800">Admin Dashboard</a>
+      <a href="{{ url_for('admin.users_list') }}" class="block px-4 py-2 hover:bg-zinc-800">Manage Users</a>
+    {% else %}
+      <a href="{{ url_for('customer.customer_dashboard') }}" class="block px-4 py-2 hover:bg-zinc-800">My Dashboard</a>
+      <a href="{{ url_for('customer.customer_orders') }}" class="block px-4 py-2 hover:bg-zinc-800">My Orders</a>
+    {% endif %}
+    <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-red-400 hover:bg-zinc-800">Logout</a>
+  </div>
+</div>
+
+
       {% else %}
+      <!-- Not logged in -->
       <a href="/otp_login" class="btn btn-gold">Login</a>
       <a href="/register" class="btn btn-outline">Register</a>
       {% endif %}
@@ -61,7 +81,7 @@
     </div>
   </div>
 
-  <!-- Mobile drawer -->
+  <!-- Mobile Drawer -->
   <div id="mobileMenu" class="mobile-drawer hidden">
     <a href="#home" class="mobile-link">Home</a>
     <a href="#menu" class="mobile-link">Menu</a>
@@ -69,14 +89,22 @@
     <a href="#event-reservation" class="mobile-link">Events</a>
     <a href="#contact" class="mobile-link">Contact</a>
     <div class="h-px bg-ivory/10 my-3"></div>
+
     {% if is_authenticated %}
-      <a href="/customer/dashboard" class="mobile-link"><i class="fa-regular fa-user"></i> My Dashboard</a>
-      <a href="/customer/orders" class="mobile-link"><i class="fa-regular fa-clipboard"></i> My Orders</a>
-      <a href="/logout" class="mobile-link text-red-400"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+      {% if user_role == 'admin' %}
+        <a href="{{ url_for('admin.dashboard') }}" class="mobile-link"><i class="fa-solid fa-gauge"></i> Admin Dashboard</a>
+        <a href="{{ url_for('admin.users_list') }}" class="block px-4 py-2 hover:bg-zinc-800">Manage Users</a>
+
+      {% else %}
+        <a href="{{ url_for('customer.customer_dashboard') }}" class="mobile-link"><i class="fa-regular fa-user"></i> My Dashboard</a>
+        <a href="{{ url_for('customer.customer_orders') }}" class="mobile-link"><i class="fa-regular fa-clipboard"></i> My Orders</a>
+      {% endif %}
+      <a href="{{ url_for('auth.logout') }}" class="mobile-link text-red-400"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
     {% else %}
       <a href="/otp_login" class="mobile-link">Login</a>
       <a href="/register" class="mobile-link">Register</a>
     {% endif %}
+
     <button id="confirmOrderBtnMobile" class="btn btn-accent w-full mt-2">Order Now</button>
   </div>
 </header>

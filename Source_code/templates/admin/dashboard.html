@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="p-4 bg-white rounded shadow">
+      <div class="text-sm text-gray-500">Users</div>
+      <div class="text-2xl font-semibold">{{ users_count }}</div>
+      <a href="{{ url_for('admin.users_list') }}" class="text-sm text-amber-600 mt-2 inline-block">Manage users →</a>
+    </div>
+    <div class="p-4 bg-white rounded shadow">
+      <div class="text-sm text-gray-500">Orders</div>
+      <div class="text-2xl font-semibold">{{ orders_count }}</div>
+      <a href="{{ url_for('admin.orders_list') }}" class="text-sm text-amber-600 mt-2 inline-block">View orders →</a>
+    </div>
+    <div class="p-4 bg-white rounded shadow">
+      <div class="text-sm text-gray-500">Private rooms</div>
+      <div class="text-2xl font-semibold">{{ rooms_count }}</div>
+      <a href="{{ url_for('admin.rooms_list') }}" class="text-sm text-amber-600 mt-2 inline-block">View rooms →</a>
+    </div>
+    <div class="p-4 bg-white rounded shadow">
+      <div class="text-sm text-gray-500">Events</div>
+      <div class="text-2xl font-semibold">{{ events_count }}</div>
+      <a href="{{ url_for('admin.events_list') }}" class="text-sm text-amber-600 mt-2 inline-block">View events →</a>
+    </div>
+  </div>
+  <a href="{{ url_for('home') }}" class="text-sm text-amber-500 hover:text-amber-400 underline">
+← Return to Website
+</a>
+
+</div>
+
+{% endblock %}
